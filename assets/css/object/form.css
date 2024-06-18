@@ -1,0 +1,292 @@
+/*
+/// Form
+*/
+
+:root {
+  --form-control-color: rebeccapurple;
+  --background-color-section: #fdfdfd;
+}
+
+form, .form-completed {
+  overflow: hidden;
+  margin: auto auto 3rem;
+  padding: var(--baseline,1.5em) calc(var(--baseline,1.5em) * 2);
+  background-color: var(--background-color-section);
+  border-radius: 15px;
+}
+
+form p {
+  margin: 0 0 1em;
+}
+
+fieldset {
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+fieldset fieldset {
+  margin: 0 0 1.5em;
+  padding: .5em;
+  border: 1px solid;
+}
+
+fieldset > * {
+  overflow: hidden;
+  padding: 0.2em;
+}
+
+legend {
+  margin-bottom: calc(var(--baseline,1.5em) * 2 );
+  padding: 0 0 0.3em 0;
+  line-height: 1;
+  color: var(--color-grey-dark);
+}
+
+fieldset fieldset legend {
+  margin: 0;
+  font-size: 1.3em;
+  min-height: calc(var(--baseline,1.5em) * 1.5);
+}
+
+.form__required {
+  display: block;
+  float: right;
+  padding: 0.3em;
+  font-size: var(--smaller);
+}
+
+form label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  order: -1;
+  margin-bottom: 0.1em;
+  width: 100%;
+  min-height: calc(var(--baseline,1.5em) * 1.5);
+  font-weight: bold;
+  color: var(--color-grey-dark);
+}
+
+
+input[type=text],
+input[type=url],
+input[type=tel],
+input[type=date],
+input[type=email],
+input[type=password],
+input[type=number],
+textarea {
+  box-sizing: border-box;
+  margin-bottom: calc(var(--baseline,1.5em) / 2);
+  padding: calc(var(--baseline,1.5em) / 2);
+  width: 100%;
+  font-family: inherit;
+  font-size: 1em;
+  vertical-align: middle;
+  border: 1px solid var(--color-grey-dark);
+  outline: none;
+  background-color: #f5f5f5;
+}
+
+input[type=text]:optional,
+input[type=url]:optional,
+input[type=tel]:optional,
+input[type=date]:optional,
+input[type=email]:optional,
+input[type=password]:optional,
+input[type=number]:optional {
+  border-color: var(--color-grey-dark);
+}
+
+input[type=text]:required,
+input[type=url]:required,
+input[type=tel]:required,
+input[type=date]:required,
+input[type=email]:required,
+input[type=password]:required,
+input[type=number]:required {
+  border-color: var(--color-grey-dark);
+}
+
+input[type=text]:focus,
+input[type=url]:focus,
+input[type=tel]:focus,
+input[type=date]:focus,
+input[type=email]:focus,
+input[type=password]:focus,
+input[type=number]:focus,
+textarea:focus {
+  border-color: var(--form-control-color);
+  outline: none;
+  box-shadow: 0 0 0px 1px var(--form-control-color);
+}
+
+input[type=text]:disabled,
+input[type=url]:disabled,
+input[type=tel]:disabled,
+input[type=date]:disabled,
+input[type=email]:disabled,
+input[type=password]:disabled,
+input[type=number]:disabled {
+  cursor: not-allowed;
+  background-color: var(--color-grey-light);
+}
+
+input[type=text]:not(:placeholder-shown),
+input[type=url]:not(:placeholder-shown),
+input[type=tel]:not(:placeholder-shown),
+input[type=date]:not(:placeholder-shown),
+input[type=email]:not(:placeholder-shown),
+input[type=password]:not(:placeholder-shown),
+input[type=number]:not(:placeholder-shown) {
+  border-color: var(--color-grey-light);
+  box-shadow: none;
+}
+
+input[type=text]:not(:placeholder-shown):valid,
+input[type=url]:not(:placeholder-shown):valid,
+input[type=tel]:not(:placeholder-shown):valid,
+input[type=date]:not(:placeholder-shown):valid,
+input[type=email]:not(:placeholder-shown):valid,
+input[type=password]:not(:placeholder-shown):valid,
+input[type=number]:not(:placeholder-shown):valid {
+  border-color: hsl(var(--base-green), var(--base-sat), var(--base-light));
+  box-shadow: none;
+}
+
+input[type=text]:not(:placeholder-shown):invalid,
+input[type=url]:not(:placeholder-shown):invalid,
+input[type=tel]:not(:placeholder-shown):invalid,
+input[type=date]:not(:placeholder-shown):invalid,
+input[type=email]:not(:placeholder-shown):invalid,
+input[type=password]:not(:placeholder-shown):invalid,
+input[type=number]:not(:placeholder-shown):invalid {
+  border-color: hsl(var(--base-red), var(--base-sat), var(--base-light));
+  box-shadow: none;
+}
+
+input[type=button] {
+  margin-top: 0;
+  margin-bottom: 4px;
+  box-shadow: 0 5px grey,0 0 20px #bbb;
+}
+
+input[type=button]:active {
+  margin-top: 4px;
+  margin-bottom: 0;
+  box-shadow: 0 1px grey;
+}
+
+.hf-warning {
+  overflow: hidden;
+  margin: calc(var(--baseline,1.5em) / -2) 0 calc(var(--baseline,1.5em) / 2);
+  font-size: 75%;
+  color: hsl(var(--base-red), var(--base-sat), var(--base-light));
+}
+
+.form-help {
+  font-style: italic;
+}
+
+.form-control {
+  padding: 0.2em 0 0.4em;
+  font-family: font-family: var(--font-base);;
+  justify-content: start;
+  font-weight: bold;
+  line-height: 1;
+  display: grid;
+  grid-template-columns: 1em auto;
+  gap: 0.5em;
+}
+
+fieldset.form-radio,
+fieldset.form-radio legend {
+  padding: 0.3em 0;
+  min-height: 1.5em;
+  font-family: var(--font-base);
+  font-size: 1rem;
+  width: 100%;
+  border: 0;
+}
+
+fieldset.form-radio p {
+  margin-bottom: 0;
+}
+
+.form-radio .flex {
+  justify-content: left;
+}
+
+.form-radio p {
+  flex: inherit;
+  width: fit-content;
+  margin-right: 10px;
+}
+.form-completed form, .completed {
+  display: none;
+}
+
+.form-completed .completed {
+  display: block;
+}
+
+.form-control + .form-control {
+  margin-top: 1em;
+}
+
+.form-control:focus-within {
+  //color: var(--form-control-color);
+}
+
+input[type="radio"] {
+  position: relative;
+  /* Add if not using autoprefixer */
+  -webkit-appearance: none;
+  /* Remove most all native input styles */
+  appearance: none;
+  /* For iOS < 15 */
+  background-color: transparent;
+  /* Not removed via appearance */
+  margin: 0;
+  margin-top: -5px;
+
+  font-family: var(--title-font-name);
+  color: currentColor;
+  width: 1.15rem;
+  height: 1.15rem;
+  border: 2px solid currentColor;
+  border-radius: 50%;
+  transform: translateY(0.2em);
+
+  display: grid;
+  display: block;
+  place-content: center;
+}
+
+input[type="radio"]::before {
+  display: block;
+  position: absolute;
+  content: "";
+  transform-origin: top left;
+  top: 50%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-50%);
+  height: clamp(8px, 26px - 16px, 15px);
+  width: clamp(8px, 26px - 16px, 15px);
+  border-radius: 100%;
+  transition: 120ms transform ease-in-out;
+  box-shadow: inset 1em 1em var(--form-control-color);
+  /* Windows High Contrast Mode */
+  background-color: CanvasText;
+  scale: 0;
+}
+
+input[type="radio"]:checked::before {
+  scale: 1;
+}
+
+input[type="radio"]:focus {
+  outline: 1px solid currentColor;
+  outline-offset: 1px;
+}

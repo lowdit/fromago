@@ -1,0 +1,46 @@
+{{- define "title" -}}{{- .Title -}}{{- end -}}
+{{- define "main" -}}
+  {{- if .Content -}}
+    <article class="content-grid">
+      <div class="section-header section-line section-background {{ if ne .Section "expertise" "products" }}full-width{{ end }}">
+        {{ if ne .Section "expertise" "products" }}
+          {{ partial "elements/images-background.html" (dict "image" "/images/hero-content.jpg" "class" "section-header") }}
+        {{ end }}
+        <div class="grid grid-2 grid-gap-none align-items">
+          {{- if eq .Section "expertise" "products" }}
+          <div>
+            {{ partial "elements/images.html" (dict "image" .Params.image "title" "" "alt" "" "class" "cover") | replaceRE "<link rel='preload' as='image' srcset='" "<link rel='preload' as='image' imagesrcset='" | safeHTML }}
+          </div>
+          {{ end -}}
+          <div class="wrapper padding-block pl-4">
+            {{ if eq .Section "expertise" }}
+              {{- $slug := delimit (first 1 (split (path.Base .File) ".")) "" -}}
+              {{- if $slug }}
+                <svg aria-hidden="true" width="1em" class="left illustration illustration-golden" role="img" aria-label="{{ .Title }}" viewBox="0 0 200 200">
+                  <use xlink:href="/assets/images/picto-title.svg#{{ $slug }}" />
+                </svg>
+              {{ end -}}
+            {{ end -}}
+            <h1>
+              <span>
+                {{ .Title }}
+              </span>
+            </h1>
+            {{- if .Params.download }}
+              <a class="btn btn-more btn-download " title="" href="assets/files/{{ .Params.download }}" download>
+                <span>{{ i18n "link-download" }}</span>
+              </a>
+            {{ end -}}
+          </div>
+        </div>
+      </div>
+      <section>
+        {{ partialCached "elements/content.html" .Content .Content }}
+      </section>
+      {{/*
+      <hr class="divider">
+      {{ partial "navigations/nav-prevnext.html" . }}
+      */}}
+    </article>
+  {{- end -}}
+{{- end -}}

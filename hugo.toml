@@ -1,0 +1,13 @@
+baseURL = "/"
+paginate = "10"
+
+title = "Fromago"
+theme = "fromago"
+
+defaultContentLanguage = "fr"
+defaultContentLanguageInSubdir = true
+enableInlineShortcodes = true
+removePathAccents = true
+
+disableKinds = ["taxonomy", "taxonomyTerm"]
+

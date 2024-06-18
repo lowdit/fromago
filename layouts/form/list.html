@@ -1,0 +1,156 @@
+{{ define "main" }}
+{{ partialCached "utils/css.html" (dict "context" . "filefolder" "object" "filename" "form") "form" }}
+<div class="fg-wrapper">
+  <section class="page-header--c">
+    <h1 class="page-header-title">{{ .Title }}</h1>
+    {{ .Params.description | markdownify }}
+  </section>
+</div>
+<div class="fg-wrapper">
+  <div class="single-container markdown">{{- partialCached "elements/content.html" .Content -}}</div>
+  <div id="comment-post">
+    <script type="text/javascript">
+
+        const slugify = text =>
+          text
+            .toString()
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .toLowerCase()
+            .trim()
+            .replace(/\s+/g, '-')
+            .replace(/[^\w-]+/g, '')
+            .replace(/--+/g, '-')
+        var comment = function(button){
+          if ( !window.event.target.parentElement.reportValidity() ){
+            return;
+          }
+
+          let keywords = ["slugpath" {{- range .Params.form }}{{ range .questions }}, {{- $name := (cond (eq .name "") .label .name) -}}{{- if eq .type "radio" }}{{ printf "%s_%s" (anchorize $name) .type }}{{ else }}{{ anchorize $name }}{{ end }}{{ end }}{{ end }}];
+
+          let payload = {};
+          payload.data = {}
+          payload.name = "anonymous"
+          payload.slugname = "anonymous"
+          const date = new Date();
+          const formattedDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+          payload.date = formattedDate
+          keywords.forEach(function(item, index) {
+            if (item.indexOf("_radio") !== -1 ) {
+                var radioitem = item.split('_')[0]
+                var ele = document.getElementsByName("fields["+radioitem+"]");
+                payload.data[radioitem] = false
+                for(i = 0; i < ele.length; i++) {
+                  if(ele[i].checked)
+                  payload.data[radioitem] = ele[i].value
+                }
+              }
+              else {
+                if (item == "slugpath"){
+                  payload[item] = document.getElementById("comment-"+item).value.trim();
+                }
+                else if (item == "name") {
+                  const betterDate = `${date.getHours()}-${date.getMinutes()}-${String(date.getSeconds() + 1).padStart(2, '0')}`;
+                  if (document.getElementById("comment-"+item).value.trim() == "") {
+                    payload[item] = betterDate;
+                    payload.slugname = betterDate;
+                  }
+                  else {
+                    payload[item] = document.getElementById("comment-"+item).value.trim().replaceAll("'", '’').replaceAll("(", '\(').replaceAll(")", '\)');
+                    payload.slugname = slugify(document.getElementById("comment-"+item).value.trim());
+                  }
+                }
+                else {
+                  payload.data[item] = document.getElementById("comment-"+item).value.trim().replaceAll("'", '’').replaceAll("(", '\(').replaceAll(")", '\)').replaceAll('"', ' ');
+                }
+              }
+          });
+          //keywords = keywords.map((item) => item.split('_')[0]);
+          //payload.keywords = keywords.splice(1, keywords.length)
+          //payload["email"] = SparkMD5.hash(payload["email"]);
+          //console.log(payload)
+          fetch("https://publicactiontrigger.azurewebsites.net/api/dispatches/{{ .Params.targetrepo }}", {
+            method: 'POST',
+            mode: 'cors',
+            credentials: 'omit',
+            cache: 'no-cache',
+            redirect: 'error',
+            referrerPolicy: 'no-referrer',
+            body: JSON.stringify({ event_type: 'interview', client_payload: { data: payload } })
+          }).then(function(resp){
+            if(resp.ok){
+              //console.log(resp)
+              alert('{{ i18n "form-alert-success" }}');
+              localStorage.setItem("formSuccess{{ anchorize (lower .Page.Title) }}", JSON.stringify(true));
+              setTimeout(function(){ location.reload(); }, 1000);
+            } else if (resp.status == 422){
+              resp.text().then(
+                function(msg){
+                  alert("Error: "+msg);
+                })
+            }
+          });
+        }
+
+    </script>
+    <div id="form">
+    <form>
+        <!-- https://github.com/rodenacker/FormSpamPrevention */}} -->
+        <input id="comment-slugpath" name="options[slugpath]" type="hidden" value="{{ anchorize (lower .Page.Title) }}">
+        {{- range .Params.form }}
+        <fieldset>
+        <legend>{{ .title }}</legend>
+          {{- range .questions }}
+          {{- $name := (cond (eq .name "") .label .name) }}
+            {{- if eq .type "radio" }}
+            <fieldset id="comment-{{ anchorize $name }}_{{ .type }}" class="form-radio">
+              <legend>{{ htmlUnescape .label | safeHTML }}</legend>
+              <div class="flex">
+              {{- range .element }}
+                <p>
+                  <label class="form-control">
+                    <input name="fields[{{ anchorize $name }}]" type="radio" value="{{ anchorize .label }}">
+                    {{ .label | safeHTML }}
+                  </label>
+                </p>
+              {{ end -}}
+              </div>
+              {{ if .help }}<span id="help-{{ anchorize .help }}" class="form-help">{{ .help }}</span>{{ end }}
+            </fieldset>
+            {{- else if eq .type "textarea" }}
+            <p>
+              <label for="comment-{{ anchorize $name }}">
+                {{ .label | safeHTML }}{{ if .required }}<span class="form__required">{{ i18n "form-required" }}</span>{{ end }}
+              </label>
+              <textarea id="comment-{{ anchorize $name }}" name="fields[{{ anchorize $name }}]" type="{{ .type }}" {{ if .help }}aria-describedby="help-{{ anchorize .help }}"{{ .help }}{{ end }} rows=5 placeholder="{{ .placeholder }}"{{ if .required }} required{{ end }}></textarea>
+              {{ if .help }}<span id="help-{{ anchorize .help }}" class="form-help">{{ .help }}</span>{{ end }}
+            </p>
+            {{- else }}
+            <p>
+              <label for="comment-{{ anchorize $name }}">
+                {{ .label | safeHTML }}{{ if .required }}<span class="form__required">{{ i18n "form-required" }}</span>{{ end }}
+              </label>
+              <input id="comment-{{ anchorize $name }}" name="fields[{{ anchorize $name }}]" type="{{ .type }}" {{ if .help }}aria-describedby="help-{{ anchorize .help }}"{{ .help }}{{ end }} placeholder="{{ .placeholder }}"{{ if .required }} required{{ end }} />
+              {{ if .help }}<span id="help-{{ anchorize .help }}" class="form-help">{{ .help }}</span>{{ end }}
+            </p>
+            {{ end }}
+          {{ end -}}
+        </fieldset>
+        {{ end -}}
+        <input type="button" value='{{ i18n "form-submit" }}' class="btn right" onclick="comment()" ></input>
+    </form>
+    <div class="completed">
+      <h2>{{ i18n "form-completed" }}</h2>
+    </div>
+  </div>
+  </div>
+</div>
+{{ if ne .Params.shot "repeat" }}
+<script>
+  if (localStorage.getItem("formSuccess{{ anchorize (lower .Page.Title) }}")) {
+    const form = document.getElementById("form");
+    form.classList.add("form-completed");
+  }
+</script>
+{{ end }}
+{{ end }}

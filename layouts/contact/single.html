@@ -1,0 +1,22 @@
+{{ define "main" }}
+<article class="fg-wrapper narrow">
+  <h1 class="title-main">{{ .Title }}</h1>
+  {{- partialCached "elements/content.html" .Content -}}
+  {{ partialCached "utils/css.html" (dict "context" . "filefolder" "object" "filename" "form") "form" }}
+  <form>
+    <fieldset>
+        <legend>{{ i18n "form-legend" }}</legend>
+        <label>{{ i18n "form-name" }}<span class="form__required">{{ i18n "form-required" }}</span></label>
+        <input type="text" placeholder="ex. Tom Glance" required>
+        <label>{{ i18n "form-email" }}<span class="form__required">{{ i18n "form-required" }}</span></label>
+        <input type="email" placeholder="ex. tom.glance@mail.io" required>
+        <label>{{ i18n "form-topic" }}<span class="form__required">{{ i18n "form-required" }}</span></label>
+        <input type="text" placeholder="{{ i18n "form-topic-placeholder" }}Need information about…" required>
+        <label>{{ i18n "form-message" }}</label>
+        <textarea placeholder="{{ i18n "form-message-placeholder" }}" class="w-full"></textarea>
+      <input type="submit" value="{{ i18n "form-submit" }}">
+    </fieldset>
+  </form>
+</article>
+<hr class="divider full-width">
+{{ end }}

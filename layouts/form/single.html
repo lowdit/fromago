@@ -1,0 +1,130 @@
+{{ define "main" }}
+{{ partialCached "utils/css.html" (dict "context" . "filefolder" "object" "filename" "form") "form" }}
+<div class="fg-wrapper">
+  <section class="page-header--c">
+    <h1 class="page-header-title">{{ .Title }}</h1>
+    {{ .Params.description | markdownify }}
+  </section>
+</div>
+<div class="fg-wrapper">
+  <div class="single-container markdown">{{- partialCached "elements/content.html" .Content -}}</div>
+  <div id="comment-post">
+    <script type="text/javascript">
+        const slugify = text =>
+          text
+            .toString()
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .toLowerCase()
+            .trim()
+            .replace(/\s+/g, '-')
+            .replace(/[^\w-]+/g, '')
+            .replace(/--+/g, '-')
+        var comment = function(button){
+          if ( !window.event.target.parentElement.reportValidity() ){
+            return;
+          }
+
+          let keywords = ["slug" {{ range .Params.questions }}, {{- if eq .type "radio" }}{{ printf "%s_%s" (anchorize .name) .type }}{{ else }}{{ anchorize .name }}{{ end }}{{ end }}];
+
+          let payload = {};
+          payload.data = {}
+          payload.name = "anonymous"
+          payload.slugname = "anonymous"
+          const date = new Date();
+          const formattedDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}-${String(date.getMinutes())}-${String(date. getSeconds())}`;
+          payload.date = formattedDate
+          keywords.forEach(function(item, index) {
+            if (item.indexOf("_radio") !== -1 ) {
+                var radioitem = item.split('_')[0]
+                var ele = document.getElementsByName("fields["+radioitem+"]");
+                payload.data[radioitem] = false
+                for(i = 0; i < ele.length; i++) {
+                  if(ele[i].checked)
+                  payload.data[radioitem] = ele[i].value
+                }
+              }
+              else {
+                if (item == "slug"){
+                  payload[item] = document.getElementById("comment-"+item).value.trim();
+                }
+                else if (item == "name") {
+                  payload[item] = document.getElementById("comment-"+item).value.trim();
+                  payload.slugname = slugify(document.getElementById("comment-"+item).value.trim());
+                }
+                else {
+                  payload.data[item] = document.getElementById("comment-"+item).value.trim();
+                }
+              }
+          });
+          // Debug help
+          //keywords = keywords.map((item) => item.split('_')[0]);
+          //payload.keywords = keywords.splice(1, keywords.length)
+          //payload["email"] = SparkMD5.hash(payload["email"]);
+          //console.log(payload)
+          fetch("https://publicactiontrigger.azurewebsites.net/api/dispatches/brtrdkeller/digitalinclusion", {
+            method: 'POST',
+            mode: 'cors',
+            credentials: 'omit',
+            cache: 'no-cache',
+            redirect: 'error',
+            referrerPolicy: 'no-referrer',
+            body: JSON.stringify({ event_type: 'interview', client_payload: { data: payload } })
+          }).then(function(resp){
+            if(resp.ok){
+              alert('{{ i18n "form-alert-success" }}');
+              localStorage.setItem("formSuccess", JSON.stringify(true));
+            } else if (resp.status == 422){
+              resp.text().then(
+                function(msg){
+                  alert("Error: "+msg);
+                })
+            }
+          });
+        }
+
+    </script>
+    <form>
+        <input id="comment-slug" name="options[slug]" type="hidden" value="{{ anchorize (lower .Page.Title) }}">
+        {{- range .Params.form }}
+        <fieldset>
+        <legend>{{ .title }}</legend>
+          {{- range .questions }}
+            {{- if eq .type "radio" }}
+            <fieldset id="comment-{{ anchorize .name }}_{{ .type }}" class="form-radio">
+              {{- $name := .name }}
+              <legend>{{ .label }}</legend>
+              <div class="flex">
+              {{- range .element }}
+                <p>
+                  <label class="form-control">
+                    <input name="fields[{{ anchorize $name }}]" type="radio" value="{{ anchorize .label }}">
+                    {{ .label }}
+                  </label>
+                </p>
+              {{ end -}}
+              </div>
+            </fieldset>
+            {{- else if eq .type "textarea" }}
+            <p>
+              <label>
+                {{ .label }}{{ if .required }}<span class="form__required">{{ i18n "form-required" }}</span>{{ end }}
+              </label>
+              <textarea id="comment-{{ anchorize .name }}" name="fields[{{ anchorize .name }}]" type="{{ .type }}" rows=5 placeholder="{{ .placeholder }}"{{ if .required }} required{{ end }}></textarea>
+            </p>
+            {{- else }}
+            <p>
+              <label>
+                {{ .label }}{{ if .required }}<span class="form__required">{{ i18n "form-required" }}</span>{{ end }}
+              </label>
+              <input id="comment-{{ anchorize .name }}" name="fields[{{ anchorize .name }}]" type="{{ .type }}" placeholder="{{ .placeholder }}"{{ if .required }} required{{ end }} />
+            </p>
+            {{ end }}
+          {{ end -}}
+        </fieldset>
+        {{ end -}}
+        <input type="button" value='{{ i18n "form-submit" }}' class="btn right" onclick="comment()" ></input>
+    </form>
+  </div>
+</div>
+{{ end }}

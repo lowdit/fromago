@@ -1,0 +1,104 @@
+home:
+  other: "Accueil"
+nav-main:
+  other: Navigation principale
+nav-content:
+  other: A suivre
+nav-package:
+  other: Découvrir les autres catégories
+nav-skiplinks-menu:
+  other: Navigation principale
+nav-skiplinks-content:
+  other: Contenu principal
+nav-skiplinks-footer:
+  other: Pied de page
+aria-label-header:
+  other: Bannière
+aria-label-menu-main:
+  other: Principale
+aria-label-content:
+  other: Contenu
+aria-label-footer:
+  other: Pied de page
+nav-anchor:
+  other: Accéder aux thématiques
+promise-title:
+  other: Une bibliothèque de contenus
+promise-text:
+  other: pour améliorer les résultats de l'enseignement et de l'apprentissage dans la région nord du Ghana
+title-related-content:
+  other: Contenus similaires
+link-access-more:
+  other: Voir plus
+link-access-more-solutions:
+  other: "See more solutions"
+link-access-more-products:
+  other: "See more products"
+link-download:
+  other: "Download Assets"
+link-access-more-on:
+  other: "Voir plus sur nos compétences en {{ . }}"
+link-access-content:
+  other: Voir le contenu
+form-legend:
+  other: "Indiquez votre message"
+form-legend-sort:
+  other: "Trier par:"
+form-legend-sort-date:
+  other: "Trier par date:"
+form-label-title:
+  other: "Titre"
+form-label-lang:
+  other: "Langue"
+form-legend-lang:
+  other: "Languages:"
+form-label-date:
+  other: "Date"
+form-label-ascending:
+  other: "Croissant"
+form-label-descending:
+  other: "Decroissant"
+form-label-all:
+  other: "Tout"
+message-video-compatibility:
+  other: Your browser does not support the video tag.
+message-audio-compatibility:
+  other: "Your browser does not support the audio tag."
+message-not-found:
+  other: Page non trouvée
+languages:
+  one: Langue
+  other: Langues
+category:
+  one: catégorie
+  other: catégories
+optional:
+  other: optionel
+form-required:
+  other: obligatoire
+location:
+  other: location
+form-name:
+  other: Votre nom
+form-email:
+  other: Votre adresse email
+form-topic:
+  other: Un Sujet ?
+form-phone:
+  other: téléphone
+form-message:
+  other: Un message ?
+form-completed:
+  other: Formulaire complété
+form-alert-success:
+  other: Nous avons bien enregistré les informations
+form-message-placeholder:
+  other: Some information here
+form-submit:
+  other: Envoyer
+contact-us:
+  other: Nous contacter
+404-message:
+  other: Page non trouvée
+404-button:
+  other: Retour à la page d’accueil

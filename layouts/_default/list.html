@@ -1,0 +1,53 @@
+{{- define "main" -}}
+  <!--$paginator-->
+  {{- if .IsHome -}}
+    {{- .Scratch.Set "Paginator" (.Paginate (where .Site.RegularPages "Page.Type" "in" site.Params.mainSections)) }}
+  {{- else -}}
+    {{ .Scratch.Set "Paginator" (.Paginate .RegularPagesRecursive) }}
+  {{- end -}}
+
+  {{- $paginator:=(.Scratch.Get "Paginator") -}}
+
+  <div class="content-grid">
+    <div class="section-header section-line section-background {{ if ne .Section "expertise" }}full-width{{ end }}">
+      
+    <div class="m-0">
+    {{- partialCached "elements/content.html" .Content .Content -}}
+    {{- $.Scratch.Set "linksingle" .RelPermalink -}}
+    {{- $.Scratch.Set "hassection" .Sections -}}
+    {{- $sectionTitle := (.Site.GetPage .Section).Title -}}
+    {{- range $id, $value := $paginator.Pages -}}
+      <article class="flex flex-reverse align-items section-line">
+        {{- $path := "" }}
+        {{- with .File }}{{ $path = .Path }}{{ else }}{{ $path := path.Dir .Path }}{{ end }}
+        <section class="padding-block">
+          <h2 class="title-main"><a href="{{ .Permalink }}">{{ if .Title }}{{ .Title }}{{ else }}{{ $sectionTitle }} {{ replace (path.Base $path) (path.Ext $path) "" }}{{ end }}</a></h2>
+          {{- if or .Date ($.Scratch.Get "hassection") -}}
+          <p style="display:block;margin-top:-1.5em;">
+            {{- if .Date -}}<time datetime="{{ .Date.Format "2006-01-02T15:04:05Z07:00" | safeHTML }}">{{ .Date.Day }} {{ index $.Site.Data.month (printf "%d" .Date.Month) }} {{ .Date.Year }}</time>{{ end }}
+            {{- if $.Scratch.Get "hassection" -}}{{ if lt (len (split ($.Scratch.Get "linksingle") "/")) 4 }} pour <a href="{{ $.Site.BaseURL | default "/" }}{{ index (last 3 (split (delimit (split .RelPermalink "/") "," "") ",")) 0 }}/{{ index (last 2 (split (delimit (split .RelPermalink "/") "," "") ",")) 0 }}/">{{ index (last 2 (split (delimit (split .RelPermalink "/") "," "") ",")) 0 }}</a>{{- end -}}{{- end -}}
+          </p>
+          {{- end -}}
+          <p>Veniam ut irure id excepteur nisi occaecat Lorem est dolore velit nostrud pariatur ipsum laboris.</p>
+          {{- if .Params.summary -}}
+          <p>{{ .Params.summary }}</p>
+          {{- end -}}
+          <p>
+            <a class="btn btn-more" href="{{ .Permalink }}" title="{{ .Title }}">
+              <span>{{ i18n "link-access-more" }}</span>
+            </a>
+          </p>
+        </section>
+        {{- with .Params.image }}
+        <aside>
+          {{ partial "elements/images.html" (dict "image" . "title" "" "alt" "" "class" "padding-block") | replaceRE "<link rel='preload' as='image' srcset='" "<link rel='preload' as='image' imagesrcset='" | safeHTML }}
+        </aside>
+        {{ end -}}
+      </article>
+  {{- end -}}
+  <!--pagination-->
+  <br>
+  {{- partial "navigations/paginator.html" . -}}
+  </div>
+</div>
+{{- end -}}

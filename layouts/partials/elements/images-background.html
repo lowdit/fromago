@@ -1,0 +1,64 @@
+
+{{- $path  := print .image -}}
+{{- $url   := $path -}}
+{{- $size  := .size -}}
+{{- $class := .class -}}
+{{- $image := resources.Get $url -}}
+
+{{- with $image -}}
+  {{- if ge .Width "800" -}}
+    {{ $image800 := printf ", %s 800w" (.Resize "800x").Permalink }}
+  {{- end -}}
+  <link rel='preload' as='image' srcset='
+  {{- if ge .Width "500" -}}
+    {{ (.Resize "500x webp").Permalink | safeURL }} 500w
+  {{- end -}}
+  {{- if ne $size "small" -}}
+  {{- if ge .Width "800" -}}
+    ,{{ (.Resize "800x webp").Permalink }} 800w
+  {{- end -}}
+  {{- if ge .Width "1200 webp" -}}
+    ,{{ (.Resize "1200x webp").Permalink | safeURL }} 1200w
+  {{- end -}}
+  {{- if ge .Width "1500" -}}
+    ,{{ (.Resize "1500x webp").Permalink | safeURL }} 1500w
+  {{- end -}}{{- end -}}'
+  href='{{ (.Resize "500x webp").Permalink | safeURL }}'
+  imagesizes='50vw'>
+<style>
+  {{- if ne $size "small" -}}
+  {{- if ge .Width "500" }}
+    @media (max-width: 56.25em) {
+      .{{ $class }} {
+        background-image: url("{{ (.Resize "500x webp").Permalink | safeURL }}");
+      }
+    }
+  {{ end -}}
+  {{- if ge .Width "800" }}
+    @media (min-width: 56.25em) {
+      .{{ $class }} {
+        background-image: url("{{ (.Resize "800x webp").Permalink | safeURL }}");
+      }
+    }
+  {{ end -}}
+  {{- if ge .Width "1200" }}
+    @media (min-width: 75em) {
+      .{{ $class }} {
+        background-image: url("{{ (.Resize "1200x webp").Permalink | safeURL }}");
+      }
+    }
+  {{ end -}}
+  {{- if ge .Width "1500" }}
+    @media (min-width: 112.5em) {
+      .{{ $class }} {
+        background-image: url("{{ (.Resize "1500x webp").Permalink | safeURL }}");
+      }
+    }
+  {{ end -}}
+  {{- else -}}
+  .{{ $class }} {
+    background-image: url("{{ (.Resize "500x webp").Permalink | safeURL }}");
+  }
+  {{ end -}}
+</style>
+{{- end -}}

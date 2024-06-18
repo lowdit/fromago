@@ -1,0 +1,118 @@
+@charset "utf-8";
+
+/* CSS DIRECTORY
+	1. =GLOBAL SETTINGS
+  2. =HEADER & FOOTER
+  3. =TYPOGRAPHY
+	4. =LOGO
+*/
+
+/* GLOBAL SETTINGS
+   ----------------------------- */
+
+/* = Colors = */
+
+:root {
+  --background-color: var(--color-primary-dark);
+  --background-color-body: #edf4f8;
+  --base-font-name: "Inter";
+  --title-font-name: "Inter";
+  --base-primary: 240;
+  --base-secondary: 44;
+  --color-secondary: #b3a06c;
+  --link-color: var(--color-primary);
+  --text-color: hsl(0 0% var(--l-0));
+  --text-color-lighter: hsl(0 0% var(--l-10));
+  --title-color: var(--text-color);
+  --background-color-section: rgba(245, 250, 255, 1);
+  --background-color-selection: var(--color-primary-light);
+  --height-header: 77px;
+  font-feature-settings: 'liga' 1, 'calt' 1;
+}
+
+/*//  @media (prefers-color-scheme: dark) {
+  // :root {
+  //   --background-color-section: rgba(30, 30, 30, 1);
+  //   --background-color-body: #212529;
+  // }
+//
+  // body {
+  //   font-weight: 400;
+  // }
+//
+  // strong,
+  // b,
+  // th,
+  // h1,
+  // h2,
+  // h3,
+  // h4,
+  // h5,
+  // h6 {
+  //   font-weight: 600;
+  // }
+//}
+ */
+/* = Very basic styles = */
+
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
+  margin: 0;
+}
+
+html {
+  box-sizing: border-box;
+  height: -webkit-fill-available;
+  word-spacing: 1px;
+  scroll-behavior: smooth;
+
+  -webkit-text-size-adjust: 100%;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  padding-top: var(--height-header);
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
+  color: var(--text-color, --color-grey-dark);
+  background-color: var(--background-color-body, #fff);
+}
+
+/* = Error = */
+
+body.error-page {
+  color: #fff;
+  background-color: var(--color-grey-dark);
+  background-size: cover;
+}
+
+/* HEADER & FOOTER
+   ----------------------------- */
+
+/* = main = */
+
+main {
+  flex-grow: 1;
+}
+
+/* = header = */
+
+header {
+  padding: 0 var(--baseline,1.5em);
+}
+
+.header {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  min-height: var(--height-header);
+  transition: top 0.3s;
+  z-index: 100;
+  background-color: var(--background-color-body, #fff);
+}
+

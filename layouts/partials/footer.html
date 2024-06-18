@@ -1,0 +1,46 @@
+<footer id="footer" role="contentinfo" aria-label="{{ i18n "aria-label-footer" }}">
+  <div class="fg-wrapper">
+    <div class="text-center padding-block">
+      <img src="/assets/images/logo.svg" width="150" role="img" alt="Logo {{ if .Site.Params.organisation }}{{ .Site.Params.organisation }}{{ else }}{{ .Site.Title }}{{ end }}">
+    </div>
+    <div class="flex">
+      <div>
+        <h2 class="m-0">{{ (index (where .Site.Sections "Section" "casestudies") 0).Title }}</h2>
+        <ul class="p-1">
+          {{- $currentPage := . -}}
+          {{- range (where .Site.RegularPages "Section" "casestudies")  -}}
+            <li><a class="sidebar-nav-item" href="{{ .Permalink }}" title="{{ .Title }}">{{ .Name }}</a></li>
+          {{- end -}}
+        </ul>
+      </div>
+      <div>
+        <h2 class="m-0">{{ (index (where .Site.Sections "Section" "expertise") 0).Title }}</h2>
+        <ul class="p-1">
+          {{- range (where .Site.RegularPages "Section" "expertise")  -}}
+            <li><a class="sidebar-nav-item" href="{{ .Permalink }}" title="{{ .Title }}">{{ .Name }}</a></li>
+          {{- end -}}
+        </ul>
+      </div>
+      <div>
+        <h2 class="m-0">{{ (index (where .Site.Sections "Section" "about") 0).Title }}</h2>
+        <ul class="p-1">
+          {{- range (where .Site.RegularPages "Section" "about")  -}}
+            <li><a class="sidebar-nav-item" href="{{ .Permalink }}" title="{{ .Title }}">{{ .Name }}</a></li>
+          {{- end -}}
+        </ul>
+      </div>
+      <div class="promote padding-block">
+        {{ partial "elements/images-background.html" (dict "image" "/images/splash-solutions.jpg" "class" "promote" "size" "small") }}
+        <p>Exotherm products for chocolate and grease industries</p>
+        <p><a href=""><span>Discover our exotherm departement</span></a></p>
+      </div>
+    </div>
+  </div>
+  <div class="fg-wrapper grid grid-3 mt-2">
+    <address itemprop="address" itemscope itemtype="https://schema.org/PostalAddress">
+      <p>SYSTECH ANALYTICS SA</p>
+      <p><span itemprop="streetAddress">Champs-Montant 16C</span> <span itemprop="postalCode">2074</span> <span itemprop="addressLocality">MARIN-EPAGNIER</span></p>
+      <p>Phone: <span itemprop="telephone">+41 32 720 00 70</span></p>
+    </address>
+  </div>
+</footer>
