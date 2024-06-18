@@ -1,3 +1,0 @@
----
-title: Plateforme de questionnaires
----
