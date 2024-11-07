@@ -72,6 +72,10 @@ body {
   }
 }
 
+p, h1, h2, h3, h4, h5, h6 {
+  overflow-wrap: break-word;
+}
+
 h1,
 h2,
 h3,
@@ -85,6 +89,9 @@ legend {
   margin-bottom: var(--baseline,1.5em);
   font-family: var(--title-font);
   font-weight: 600;
+  line-height: 1.25;
+  text-wrap: balance;
+  letter-spacing: -0.05ch;
 }
 
 h6,
