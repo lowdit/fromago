@@ -68,6 +68,12 @@ form label {
   color: var(--color-grey-dark);
 }
 
+input, button, textarea, select {
+  font: inherit;
+  letter-spacing: inherit;
+  word-spacing: inherit;
+  color: currentColor;
+}
 
 input[type=text],
 input[type=url],
