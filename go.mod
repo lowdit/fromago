@@ -1,3 +1,3 @@
 module github.com/lowdit/fromago
 
-go 1.2
+go 1.20
