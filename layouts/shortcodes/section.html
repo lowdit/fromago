@@ -1,0 +1,32 @@
+<section{{ if and (.Get "type") (ne (.Get "type") "text-50") }} class="grid{{ with (.Get "image") }} grid-2{{ end }}"{{ end }}{{ if eq (.Get "type") "text-50" }}class="w-max-50"{{ end }}>
+  {{ if and (.Get "type") (ne (.Get "type") "text-50") }}
+    {{ if eq (.Get "type") "text-right" }}
+      {{- with .Get "image"  }}
+        <div>
+          {{ partial "elements/images.html" (dict "image" (printf "/images/%s" .) "title" "" "alt" "" "class" "cover padding-block") | replaceRE "<link rel='preload' as='image' srcset='" "<link rel='preload' as='image' imagesrcset='" | safeHTML }}
+        </div>
+      {{ end -}}
+      <div{{ if eq (.Get "type") "text-left" }} style="order:-1;"{{ end }}>
+        {{ with .Get "title" }}<h2 class="title-main">{{ . }}</h2>{{ end }}
+        {{ with .Get "subtitle" }}<p class="subtitle">{{ . }}</p>{{ end }}
+        {{ with .Inner }}<div class="text mb-2">{{ . | markdownify }}</div>{{ end }}
+        <p class="text-center">
+          <a class="btn btn-more m-auto" title="{{ i18n "link-access-more-on" (.Get "title") }}">{{ i18n "link-access-more" }}</a>
+        </p>
+      </div>
+    {{ end }}
+  {{- else }}
+    {{- with .Get "title" }}<h2 class="title-main">{{ . }}</h2>{{ end }}
+    {{- with .Get "subtitle" }}<p class="subtitle">{{ . }}</p>{{ end }}
+    {{- if .Inner }}<div class="text mb-2{{ if .Get "columns" }} text-columns{{ end }}">{{ .Inner | markdownify }}</div>{{ end }}
+    {{- if .Get "button" }}
+    <p>
+      <a class="btn btn-more{{ if not (.Get "columns") }} m-auto{{ end }}" href={{ .Get "button" }} title="{{ i18n "link-access-more-on" (.Get "title") }}">
+        <span>{{ i18n "link-access-more" }}</span>
+      </a>
+    </p>
+    {{ end -}}
+  {{ end -}}
+</section>
+<hr>
+

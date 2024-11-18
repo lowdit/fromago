@@ -1,0 +1,15 @@
+{{- $filepath := printf "/css/%s/%s.css" .filefolder .filename -}}
+{{- $css      := (resources.Get $filepath) -}}
+{{- if $css -}}
+  {{- $css := $css | minify  -}}
+  {{- if .inline -}}
+    <style>
+      {{ (slice $css | resources.Concat $filepath | minify).Content | safeCSS }}
+    </style>
+  {{- else -}}
+     <link rel="stylesheet" href="{{ $css.Permalink }}" {{ with $css.Data.Integrity }}integrity="{{ . }}"{{- end -}} media="screen">
+  {{- end -}}
+{{- else -}}
+  {{- warnf "The file css %s doesn't exist" $filepath -}}
+{{- end -}}
+

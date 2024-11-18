@@ -1,0 +1,49 @@
+{{- $Ordinal := .Ordinal }}
+{{- $gallerypath := index (first 1 (split (path.Base .Page.File) ".")) 0 -}}
+{{ if resources.Match (printf "images/%s/*" $gallerypath) }}
+<style>
+  .gallery-landscape {
+    grid-column: span 2;
+    grid-row: span 1;
+  }
+  .gallery figure {
+    max-height: 30rem;
+  }
+  .gallery {
+      display: flex;
+      flex-direction: column;
+      flex-gap: 10px;
+    }
+
+  @media screen and (min-width: 56.25em) {
+    .gallery {
+      display: grid;
+      gap: 10px;
+      grid-template-columns: repeat(auto-fill, minmax(600px, 1fr));
+      grid-template-rows: masonry;
+      masonry-auto-flow: next;
+    }
+  }
+  .gallery a {
+    display: block;
+  }
+</style>
+<div class="gallery lightbox-{{ $Ordinal }} content-visibility">
+{{- range resources.Match (printf "images/%s/*" $gallerypath) -}}
+  <div class="flex flex-column{{ if ((eq (div .Width .Height) 2)) }} gallery-landscape{{ end }}">
+    <figure class="flex flex-max">
+      <a href="{{ .RelPermalink }}" cfmodified="modified">
+        {{ partial "elements/images.html" (dict "image" .RelPermalink "title" "" "alt" "" "class" "align-items-center cover") | replaceRE "<link rel='preload' as='image' srcset='" "<link rel='preload' as='image' imagesrcset='" | safeHTML }}
+      </a>
+    </figure>
+  </div>
+{{- end -}}
+</div>
+{{- $csslightbox  := resources.Get "css/simple-lightbox.min.css" -}}
+{{- $jslightbox   := resources.Get "js/simple-lightbox.min.js" -}}
+{{- $css          := slice $csslightbox | resources.Concat "/assets/js/lightbox.css" -}}
+{{- $js           := slice $jslightbox | resources.Concat "/assets/js/lightbox.js" -}}
+<link rel="stylesheet" href="{{ $css.Permalink }}" media="print" onload="this.media='all'">
+<script type="text/javascript" src="{{ $js.Permalink }}"></script>
+<script>var {{ printf "$gallery%s" (replace ( .Ordinal | anchorize) "-" "") | safeJS }} = new SimpleLightbox('.lightbox-{{ .Ordinal }} figure a', {});</script>
+{{ end }}

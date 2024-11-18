@@ -1,0 +1,62 @@
+
+{{- $path  := print .image -}}
+{{- $title := .title       -}}
+{{- $alt   := .alt         -}}
+{{- $class := .class       -}}
+{{- $url   := $path        -}}
+{{- with $url -}}
+  {{- $image := resources.Get . -}}
+  {{- with $image -}}
+    {{- if ge .Width "800" -}}
+      {{ $image800 := printf ", %s 800w" (.Resize "800x").Permalink }}
+    {{- end -}}
+    {{- with $title -}}
+    <figure>
+    {{- end -}}
+    <link rel='preload' as='image' srcset='
+    {{- if ge .Width "500" -}}
+      {{ (.Resize "500x webp").Permalink | safeURL }} 500w
+    {{- end -}}
+    {{- if ge .Width "800" -}}
+      ,{{ (.Resize "800x webp").Permalink }} 800w
+    {{- end -}}
+    {{- if ge .Width "1200" -}}
+      ,{{ (.Resize "1200x webp").Permalink | safeURL }} 1200w
+    {{- end -}}
+    {{- if ge .Width "1500" -}}
+      ,{{ (.Resize "1500x webp").Permalink | safeURL }} 1500w
+    {{- end -}}'
+    href='{{ (.Resize "500x webp").Permalink | safeURL }}'
+    imagesizes='50vw'>
+    <img
+    width='{{ (.Resize "500x webp").Width }}'
+    height='{{ (.Resize "500x webp").Height }}'
+    loading="lazy"
+    sizes="(min-width: 35em) 1200px, 100vw"
+    srcset='
+    {{- if ge .Width "500" -}}
+      {{ (.Resize "500x webp").Permalink | safeURL }} 500w
+    {{- end -}}
+    {{- if ge .Width "800" -}}
+      ,{{ (.Resize "800x webp").Permalink | safeURL }} 800w
+    {{- end -}}
+    {{- if ge .Width "1200" -}}
+      ,{{ (.Resize "1200x webp").Permalink | safeURL }} 1200w
+    {{- end -}}
+    {{- if ge .Width "1500" -}}
+      ,{{ (.Resize "1500x webp").Permalink | safeURL }} 1500w
+    {{- end -}}'
+      src="{{ (.Resize "500x webp").Permalink | safeURL }}"
+      alt="{{ $alt }}"
+      {{- with $class }}class="{{ . }}"{{ end -}}
+    >
+    {{- with $title -}}
+    <figcaption>{{ . }}</figcaption>
+    </figure>
+    {{- end -}}
+  {{- else -}}
+    <figure>
+      <img src="{{ $url }}" alt="" {{- with $class }}class="{{ . }}"{{ end -}} />
+    </figure>
+  {{- end -}}
+{{- end -}}

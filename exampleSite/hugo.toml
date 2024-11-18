@@ -1,0 +1,27 @@
+baseURL = "/"
+paginate = "10"
+
+title = "Fromago"
+themesDir = "../.."
+theme = "fromago"
+
+defaultContentLanguage = "fr"
+defaultContentLanguageInSubdir = true
+enableInlineShortcodes = true
+removePathAccents = true
+
+[params]
+  targetrepo = "lowdit/fromago/"
+
+[languages]
+  [languages.fr]
+    languageCode = "fr"
+    languageName = "Français"
+    weight = 1
+    title = "Fromago"
+  [languages.en]
+    languageCode = "en"
+    languageName = "English"
+    weight = 2
+    title = "Fromago"
+
