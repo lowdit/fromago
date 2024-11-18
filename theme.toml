@@ -3,7 +3,7 @@ license = "MIT"
 licenselink = "https://github.com/lowdit/fromago/blob/master/LICENSE"
 description = "Tool for génerating form and publishing theme in a github repo with goHugo"
 homepage = "https://github.com/lowdit/fromago/"
-tags = ["form"]
+tags = ["form","survey"]
 min_version = 0.111
 theme_version = "1.0"
 
