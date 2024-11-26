@@ -12,7 +12,7 @@
     <div class="section-header section-background {{ if ne .Section "expertise" }}full-width{{ end }}">   
     <div class="fg-wrapper mt-2">
     <h1 class="title-main">{{ .Title }}</h1>
-    {{- partialCached "elements/content.html" .Content .Content -}}
+    {{- .Content -}}
     {{- $.Scratch.Set "linksingle" .RelPermalink -}}
     {{- $.Scratch.Set "hassection" .Sections -}}
     {{- $sectionTitle := (.Site.GetPage .Section).Title -}}

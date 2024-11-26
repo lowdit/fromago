@@ -14,10 +14,9 @@
 
 :root {
   --background-color: var(--color-primary-dark);
-  --background-color-body: #fcfdfe;
   --base-font-name: "Inter";
   --title-font-name: "Inter";
-  --base-primary: 201;
+  --base-primary: 240;
   --base-secondary: 44;
   --color-secondary: #b3a06c;
   --link-color: var(--color-primary);
@@ -113,6 +112,12 @@ header {
   min-height: var(--height-header);
   transition: top 0.3s;
   z-index: 100;
-  background-color: var(--background-color-body, #fff);
 }
 
+.site-logo {
+  font-size: clamp(1.25rem, 0.61vw + 1.1rem, 1.50rem);
+  line-height: calc(8px + 2ex);
+  font-weight: 700;
+  text-decoration: none;
+  color: var(--color-primary) !important;
+}

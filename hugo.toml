@@ -1,5 +1,4 @@
 baseURL = "/"
-paginate = "10"
 
 title = "Fromago"
 
@@ -7,6 +6,11 @@ defaultContentLanguage = "fr"
 defaultContentLanguageInSubdir = true
 enableInlineShortcodes = true
 removePathAccents = true
+
+[pagination]
+  disableAliases = false
+  pagerSize = 20
+  path = 'page'
 
 disableKinds = ["taxonomy", "taxonomyTerm"]
 
