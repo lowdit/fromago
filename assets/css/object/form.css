@@ -10,7 +10,7 @@
 form, .form-completed {
   overflow: hidden;
   margin: auto auto 3rem;
-  padding: var(--baseline,1.5em) calc(var(--baseline,1.5em) * 2);
+  padding: 0;
   background-color: var(--background-color-section);
   border-radius: 15px;
   max-width: unset;
