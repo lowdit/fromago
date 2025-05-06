@@ -11,7 +11,7 @@ enableInlineShortcodes = true
 removePathAccents = true
 
 [params]
-  targetrepo = "lowdit/fromago/"
+  targetrepo = "lowdit/fromago/" ## Eg. of target repo
 
 [languages]
   [languages.fr]

@@ -69,7 +69,8 @@
           //payload.keywords = keywords.splice(1, keywords.length)
           //payload["email"] = SparkMD5.hash(payload["email"]);
           //console.log(payload)
-          fetch("https://publicactiontrigger.azurewebsites.net/api/dispatches/{{ .Params.targetrepo }}", {
+          {{- $targetrepo := cond (not .Params.targetrepo) $.Site.Params.targetrepo .Params.targetrepo }}
+          fetch("https://publicactiontrigger.azurewebsites.net/api/dispatches/{{ htmlEscape $targetrepo | plainify }}", {
             method: 'POST',
             mode: 'cors',
             credentials: 'omit',
