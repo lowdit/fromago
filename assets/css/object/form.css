@@ -3,9 +3,9 @@
 */
 
 :root {
-  --form-control-color: var(--color-primary);
+  --form-control-color: hsl(var(--base-violet), var(--base-sat), var(--base-light));
   --background-color-section: #fdfdfd;
-}
+}rgba(253, 253, 253, 0)
 
 form, .form-completed {
   overflow: hidden;

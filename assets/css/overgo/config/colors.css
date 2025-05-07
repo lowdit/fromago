@@ -9,7 +9,7 @@
 /* https://blog.jim-nielsen.com/2020/sass-color-functions-in-css/ */
 
 :root {
-  --base-color-hs: 335, 100%;
+  --base-color-hs: 0, 100%;
   --base-color: hsl(var(--base-color-hs), 50%);
   --base-color-light: hsl(var(--base-color-hs), 85%);
   --base-color-dark: hsl(var(--base-color-hs), 20%);

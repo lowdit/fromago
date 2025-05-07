@@ -146,7 +146,7 @@
     </div>
   </section>
 </div>
-{{ if ne .Params.shot "repeat" }}
+{{ if and (ne .Params.shot "repeat") (not hugo.IsServer) }}
 <script>
   if (localStorage.getItem("formSuccess{{ anchorize (lower .Page.Title) }}")) {
     const form = document.getElementById("form");

@@ -1,5 +1,5 @@
 @font-face {
-  font-family: 'TT Norms Pro';
+  font-family: 'atkinson';
   src:
     url('../fonts/tt-norms-pro/light.woff2') format('woff2'),
     url('../fonts/tt-norms-pro/light.woff') format('woff');
@@ -9,7 +9,7 @@
 }
 
 @font-face {
-  font-family: 'TT Norms Pro';
+  font-family: 'atkinson';
   src:
     url('../fonts/tt-norms-pro/regular.woff2') format('woff2'),
     url('../fonts/tt-norms-pro/regular.woff') format('woff');
@@ -19,7 +19,7 @@
 }
 
 @font-face {
-  font-family: 'TT Norms Pro';
+  font-family: 'atkinson';
   src:
     url('../fonts/tt-norms-pro/bold.woff2') format('woff2'),
     url('../fonts/tt-norms-pro/bold.woff') format('woff');

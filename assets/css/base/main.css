@@ -6,8 +6,8 @@
   --background-color: var(--color-primary-dark);
 
   --base-font-name: "Inter";
-  --title-font-name: "tt norms pro";
-  --base-primary: 270;
+  --title-font-name: "atkinson";
+  --base-primary: 0;
   --base-secondary: 44;
   --link-color: var(--color-primary);
   --text-color: hsl(0 0% var(--l-0));
