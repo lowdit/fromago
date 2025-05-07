@@ -6,6 +6,7 @@
     {{ .Params.description | markdownify }}
     {{ partialCached "content.html" .Content .Content }}
     <div>
+    {{- if not (hugo.IsServer) -}}
     {{- range .Pages }}
     {{- if or (eq (isset .Params "sitemapexclude") false) (ne .Params.sitemapExclude true) -}}
       <div>
@@ -19,10 +20,13 @@
           </p>
           {{- end -}}
           {{- with .Description -}}
-          <p>{{ . }}</p>
+          <p>{{ . | safeHTML }}</p>
           {{- end -}}
         </div>
-    {{ end -}} 
+    {{ end -}}
+    {{ end -}}
+    {{ else }}
+    <p>{{ i18n "home-message" }}</p>
     {{ end -}}
   </div>
   </section>

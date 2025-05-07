@@ -187,6 +187,10 @@ img.full-width {
   padding: calc(var(--baseline,1.5em) / 2);
 }
 
+.pr-1 {
+  padding-right: calc(var(--baseline,1.5em) / 2);
+}
+
 .p-2 {
   padding: var(--baseline,1.5em);
 }
@@ -296,6 +300,12 @@ img.full-width {
   width: 1px;
   height: 1px;
   border: 0;
+}
+
+/* Background */
+
+.bg-body {
+  background-color: var(--background-color-body, #fff);
 }
 
 /* Title */

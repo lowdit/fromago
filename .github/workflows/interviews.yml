@@ -24,7 +24,6 @@ jobs:
           echo "date=$(date +%s)" >> $GITHUB_OUTPUT
           echo "name=${{ github.event.client_payload.data.name }}" >> $GITHUB_OUTPUT
           echo "slugpath=${{ github.event.client_payload.data.slugpath }}" >> $GITHUB_OUTPUT
-
       - name: Validate required fields
         run: |
           if [[ -z "${{ steps.preprocess.outputs.slugpath }}" ]];
@@ -36,10 +35,33 @@ jobs:
           then
             exit 1;
           fi
-      - name: Create interviews data file
+      - name: Install yq
+        uses: mikefarah/yq@v4  # Utiliser l'action yq officielle
+
+      - name: Convert client payload to YAML
+        env:
+          SLUGPATH: ${{ steps.preprocess.outputs.slugpath }}
+          SLUGNAME: ${{ github.event.client_payload.data.slugname }}
+          DATE: ${{ github.event.client_payload.data.date }}
         run: |
-          mkdir -p content/interviews/${{ steps.preprocess.outputs.slugpath}}
-          echo -e '---\n${{ toJSON(github.event.client_payload.data) }}\n---' >  content/interviews/${{ steps.preprocess.outputs.slugpath}}/${{ github.event.client_payload.data.slugname }}-${{ github.event.client_payload.data.date }}.md
+          # Convertir le payload JSON en YAML
+          mkdir -p "content/interviews/${SLUGPATH}"
+          # Convertir le payload JSON en YAML
+          yamlData=$(echo '${{ toJson(github.event.client_payload.data) }}' | yq eval -P -)
+
+          # Entourer les valeurs de guillemets sauf pour les dates
+          yamlData=$(echo "$yamlData" | awk -F': ' '{
+            if ($2 ~ /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/) {
+              print $1 ": " $2
+            } else if ($2 !~ /^".*"$/) {
+              print $1 ": \"" $2 "\""
+            } else {
+              print $0  # Imprimer la ligne telle quelle si elle est déjà entourée de guillemets
+            }
+          }')
+
+          # Créer le contenu Markdown avec les métadonnées
+          echo -e "---\n$yamlData\n---\n\n" > "content/interviews/${SLUGPATH}/${SLUGNAME}-${DATE}.md"
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v5
         with:

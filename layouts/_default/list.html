@@ -9,7 +9,7 @@
   {{- $paginator:=(.Scratch.Get "Paginator") -}}
 
   <div class="content-grid">
-    <div class="section-header section-background {{ if ne .Section "expertise" }}full-width{{ end }}">   
+    <div class="section-header section-background {{ if ne .Section "expertise" }}full-width{{ end }}">
     <div class="fg-wrapper mt-2">
     <h1 class="title-main">{{ .Title }}</h1>
     {{- .Content -}}
@@ -29,7 +29,7 @@
           </p>
           {{- end -}}
           {{- with .Description -}}
-          <p>{{ . }}</p>
+          <p>{{ . | safeHTML }}</p>
           {{- end -}}
         </div>
         {{- with .Params.image }}

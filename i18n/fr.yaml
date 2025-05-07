@@ -26,6 +26,8 @@ promise-title:
   other: Une bibliothèque de contenus
 promise-text:
   other: pour améliorer les résultats de l'enseignement et de l'apprentissage dans la région nord du Ghana
+home-message:
+  other: Bienvenue sur le site de formulaire d’enquête interne. Les formulaires ne sont pas accessibles depuis cette page.
 title-related-content:
   other: Contenus similaires
 link-access-more:
@@ -91,7 +93,7 @@ form-message:
 form-completed:
   other: Formulaire complété
 form-alert-success:
-  other: Nous avons bien enregistré les informations
+  other: Nous avons bien enregistré les informations, elles sont envoyées sur le dépôt de données de ce même.
 form-message-placeholder:
   other: Some information here
 form-submit:

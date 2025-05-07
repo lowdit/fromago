@@ -47,7 +47,7 @@
               }
               else {
                 if (item == "slugpath"){
-                  payload[item] = document.getElementById("comment-"+item).value.trim();
+                  payload[item] = slugify(document.getElementById("comment-"+item).value.trim());
                 }
                 else if (item == "name") {
                   const betterDate = `${date.getHours()}-${date.getMinutes()}-${String(date.getSeconds() + 1).padStart(2, '0')}`;

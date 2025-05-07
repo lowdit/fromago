@@ -12,7 +12,7 @@ input[type="submit"],.btn,::file-selector-button {
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
-  margin: var(--baseline,1.5em) 0;
+  margin: var(--baseline,1.5em);
   padding: calc(var(--baseline,1.5em) / 1.5) calc(var(--baseline,1.5em) * 2);
   font-size: 1.3em;
   cursor: pointer;
