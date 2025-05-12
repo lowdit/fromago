@@ -6,7 +6,7 @@
     {{ .Params.description | markdownify }}
     {{ partialCached "content.html" .Content .Content }}
     <div>
-    {{- if not (hugo.IsServer) -}}
+    {{- if (hugo.IsServer) -}}
     {{- range .Pages }}
     {{- if or (eq (isset .Params "sitemapexclude") false) (ne .Params.sitemapExclude true) -}}
       <div>

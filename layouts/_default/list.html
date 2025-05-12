@@ -16,6 +16,7 @@
     {{- $.Scratch.Set "linksingle" .RelPermalink -}}
     {{- $.Scratch.Set "hassection" .Sections -}}
     {{- $sectionTitle := (.Site.GetPage .Section).Title -}}
+    {{- if (hugo.IsServer) -}}
     {{- range $id, $value := $paginator.Pages -}}
       <article class="flex flex-reverse align-items section-line">
         {{- $path := "" }}
@@ -28,9 +29,6 @@
             {{- if $.Scratch.Get "hassection" -}}{{ if lt (len (split ($.Scratch.Get "linksingle") "/")) 4 }} pour <a href="{{ $.Site.BaseURL | default "/" }}{{ index (last 3 (split (delimit (split .RelPermalink "/") "," "") ",")) 0 }}/{{ index (last 2 (split (delimit (split .RelPermalink "/") "," "") ",")) 0 }}/">{{ index (last 2 (split (delimit (split .RelPermalink "/") "," "") ",")) 0 }}</a>{{- end -}}{{- end -}}
           </p>
           {{- end -}}
-          {{- with .Description -}}
-          <p>{{ . | safeHTML }}</p>
-          {{- end -}}
         </div>
         {{- with .Params.image }}
         <aside>
@@ -38,7 +36,10 @@
         </aside>
         {{ end -}}
       </article>
-  {{- end -}}
+    {{- end -}}
+    {{- else -}}
+        <p>Vous n’avez pas accès à la liste des questionnaires</p>
+    {{ end -}}
   <!--pagination-->
   <br>
   {{- partial "navigations/paginator.html" . -}}
