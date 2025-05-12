@@ -101,13 +101,13 @@
         <input id="comment-slugpath" name="options[slugpath]" type="hidden" value="{{ anchorize (lower .Page.Title) }}">
         {{- range .Params.form }}
         <fieldset>
-        <legend>{{ .title }}</legend>
+        <legend>{{ .title  | safeHTML }}</legend>
           {{- range .questions }}
           {{- $name := (cond (eq .name "") .label .name) }}
             {{- if eq .type "radio" }}
             <fieldset id="comment-{{ anchorize $name }}_{{ .type }}" class="form-radio">
               <legend>{{ htmlUnescape .label | safeHTML }}</legend>
-              <div class="flex">
+              <div class="flex{{ if gt (len .element) 3 }} flex-column{{ end }}">
               {{- range .element }}
                 <p>
                   <label class="form-control">

@@ -93,7 +93,7 @@ form-message:
 form-completed:
   other: Formulaire complété
 form-alert-success:
-  other: Nous avons bien enregistré les informations, elles sont envoyées sur le dépôt de données de ce même.
+  other: Nous avons bien enregistré les informations, elles sont envoyées sur le même dépôt de données que ce ce site.
 form-message-placeholder:
   other: Some information here
 form-submit:
