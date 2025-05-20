@@ -21,81 +21,130 @@
             .replace(/\s+/g, '-')
             .replace(/[^\w-]+/g, '')
             .replace(/--+/g, '-')
+
+            function compterChampsVides() {
+              const formulaire = document.getElementById('form-main');
+              const champs = formulaire.elements;
+            let champsVides = 0;
+            const groupesRadio = new Set(); // Pour suivre les groupes de boutons radio
+
+            for (let i = 0; i < champs.length; i++) {
+                const champ = champs[i];
+
+                // Vérifier si le champ est défini et n'est pas un bouton
+                if (champ && champ.type !== "button") {
+                    if (champ.type === "text" || champ.type === "email" || champ.tagName === "TEXTAREA") {
+                        if (champ.value.trim() === "") {
+                            champsVides++;
+                        }
+                    } else if (champ.type === "radio") {
+                        // Ajouter le nom du groupe de boutons radio à l'ensemble
+                        groupesRadio.add(champ.name);
+                    }
+                }
+            }
+
+            // Vérifier chaque groupe de boutons radio
+            groupesRadio.forEach(nomGroupe => {
+                const radios = document.getElementsByName(nomGroupe);
+                let selectionne = false;
+                for (let j = 0; j < radios.length; j++) {
+                    if (radios[j].checked) {
+                        selectionne = true;
+                        break;
+                    }
+                }
+                if (!selectionne) {
+                    champsVides++; // Incrémenter si aucun bouton radio n'est sélectionné
+                }
+            });
+
+              return champsVides;
+          }
+
         var comment = function(button){
-          if ( !window.event.target.parentElement.reportValidity() ){
+          if ( !window.event.target.parentElement.parentElement.reportValidity() ){
             return;
           }
 
-          let keywords = ["slugpath" {{- range .Params.form }}{{ range .questions }}, {{- $name := (cond (eq .name "") .label .name) -}}{{- if eq .type "radio" }}{{ printf "%s_%s" (anchorize $name) .type }}{{ else }}{{ anchorize $name }}{{ end }}{{ end }}{{ end }}];
+          const champsVides = compterChampsVides();
+          console.log(champsVides)
+          const msg = `Vous avez laissez ${champsVides} questions sans réponse.\n\nÊtes-vous sûr de vouloir soumettre le formulaire ?`
+          const confirmation = confirm(msg);
 
-          let payload = {};
-          payload.data = {}
-          payload.name = "anonymous"
-          payload.slugname = "anonymous"
-          const date = new Date();
-          const formattedDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
-          payload.date = formattedDate
-          keywords.forEach(function(item, index) {
-            if (item.indexOf("_radio") !== -1 ) {
-                var radioitem = item.split('_')[0]
-                var ele = document.getElementsByName("fields["+radioitem+"]");
-                payload.data[radioitem] = false
-                for(i = 0; i < ele.length; i++) {
-                  if(ele[i].checked)
-                  payload.data[radioitem] = ele[i].value
-                }
-              }
-              else {
-                if (item == "slugpath"){
-                  payload[item] = slugify(document.getElementById("comment-"+item).value.trim());
-                }
-                else if (item == "name") {
-                  const betterDate = `${date.getHours()}-${date.getMinutes()}-${String(date.getSeconds() + 1).padStart(2, '0')}`;
-                  if (document.getElementById("comment-"+item).value.trim() == "") {
-                    payload[item] = betterDate;
-                    payload.slugname = betterDate;
-                  }
-                  else {
-                    payload[item] = document.getElementById("comment-"+item).value.trim().replaceAll("'", '’').replaceAll("(", '\(').replaceAll(")", '\)');
-                    payload.slugname = slugify(document.getElementById("comment-"+item).value.trim());
+          if (confirmation) {
+
+            let keywords = ["slugpath" {{- range .Params.form }}{{ range .questions }}, {{- $name := (cond (eq .name "") .label .name) -}}{{- if eq .type "radio" }}{{ printf "%s_%s" (anchorize $name) .type }}{{ else }}{{ anchorize $name }}{{ end }}{{ end }}{{ end }}];
+
+            let payload = {};
+            payload.data = {}
+            payload.name = "anonymous"
+            payload.slugname = "anonymous"
+            const date = new Date();
+            const formattedDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+            payload.date = formattedDate
+            keywords.forEach(function(item, index) {
+              if (item.indexOf("_radio") !== -1 ) {
+                  var radioitem = item.split('_')[0]
+                  var ele = document.getElementsByName("fields["+radioitem+"]");
+                  payload.data[radioitem] = false
+                  for(i = 0; i < ele.length; i++) {
+                    if(ele[i].checked)
+                    payload.data[radioitem] = ele[i].value
                   }
                 }
                 else {
-                  payload.data[item] = document.getElementById("comment-"+item).value.trim().replaceAll("'", '’').replaceAll("(", '\(').replaceAll(")", '\)').replaceAll('"', ' ');
+                  if (item == "slugpath"){
+                    payload[item] = slugify(document.getElementById("comment-"+item).value.trim());
+                  }
+                  else if (item == "name") {
+                    const betterDate = `${date.getHours()}-${date.getMinutes()}-${String(date.getSeconds() + 1).padStart(2, '0')}`;
+                    if (document.getElementById("comment-"+item).value.trim() == "") {
+                      payload[item] = betterDate;
+                      payload.slugname = betterDate;
+                    }
+                    else {
+                      payload[item] = document.getElementById("comment-"+item).value.trim().replaceAll("'", '’').replaceAll("(", '\(').replaceAll(")", '\)');
+                      payload.slugname = slugify(document.getElementById("comment-"+item).value.trim());
+                    }
+                  }
+                  else {
+                    payload.data[item] = document.getElementById("comment-"+item).value.trim().replaceAll("'", '’').replaceAll("(", '\(').replaceAll(")", '\)').replaceAll('"', ' ');
+                  }
                 }
+            });
+            //keywords = keywords.map((item) => item.split('_')[0]);
+            //payload.keywords = keywords.splice(1, keywords.length)
+            //payload["email"] = SparkMD5.hash(payload["email"]);
+            //console.log(payload)
+            {{- $targetrepo := cond (not .Params.targetrepo) $.Site.Params.targetrepo .Params.targetrepo }}
+            fetch("https://publicactiontrigger.azurewebsites.net/api/dispatches/{{ htmlEscape $targetrepo | plainify }}", {
+              method: 'POST',
+              mode: 'cors',
+              credentials: 'omit',
+              cache: 'no-cache',
+              redirect: 'error',
+              referrerPolicy: 'no-referrer',
+              body: JSON.stringify({ event_type: 'interview', client_payload: { data: payload } })
+            }).then(function(resp){
+              if(resp.ok){
+                //console.log(resp)
+                alert('{{ i18n "form-alert-success" }}');
+                localStorage.setItem("formSuccess{{ anchorize (lower .Page.Title) }}", JSON.stringify(true));
+                setTimeout(function(){ location.reload(); }, 1000);
+              } else if (resp.status == 422){
+                resp.text().then(
+                  function(msg){
+                    alert("Error: "+msg);
+                  })
               }
-          });
-          //keywords = keywords.map((item) => item.split('_')[0]);
-          //payload.keywords = keywords.splice(1, keywords.length)
-          //payload["email"] = SparkMD5.hash(payload["email"]);
-          //console.log(payload)
-          {{- $targetrepo := cond (not .Params.targetrepo) $.Site.Params.targetrepo .Params.targetrepo }}
-          fetch("https://publicactiontrigger.azurewebsites.net/api/dispatches/{{ htmlEscape $targetrepo | plainify }}", {
-            method: 'POST',
-            mode: 'cors',
-            credentials: 'omit',
-            cache: 'no-cache',
-            redirect: 'error',
-            referrerPolicy: 'no-referrer',
-            body: JSON.stringify({ event_type: 'interview', client_payload: { data: payload } })
-          }).then(function(resp){
-            if(resp.ok){
-              //console.log(resp)
-              alert('{{ i18n "form-alert-success" }}');
-              localStorage.setItem("formSuccess{{ anchorize (lower .Page.Title) }}", JSON.stringify(true));
-              setTimeout(function(){ location.reload(); }, 1000);
-            } else if (resp.status == 422){
-              resp.text().then(
-                function(msg){
-                  alert("Error: "+msg);
-                })
-            }
-          });
+            });
+          }
         }
 
     </script>
     <div id="form">
-    <form>
+    <form id="form-main">
         <!-- https://github.com/rodenacker/FormSpamPrevention -->
         <!-- https://smarkform.bitifet.net/ -->
         <input id="comment-slugpath" name="options[slugpath]" type="hidden" value="{{ anchorize (lower .Page.Title) }}">
@@ -104,6 +153,7 @@
         <legend>{{ .title  | safeHTML }}</legend>
           {{- range .questions }}
           {{- $name := (cond (eq .name "") .label .name) }}
+            {{/* RADIO */}}
             {{- if eq .type "radio" }}
             <fieldset id="comment-{{ anchorize $name }}_{{ .type }}" class="form-radio">
               <legend>{{ htmlUnescape .label | safeHTML }}</legend>
@@ -119,6 +169,7 @@
               </div>
               {{ if .help }}<span id="help-{{ anchorize .help }}" class="form-help">{{ .help }}</span>{{ end }}
             </fieldset>
+            {{/* TEXTAREA */}}
             {{- else if eq .type "textarea" }}
             <p>
               <label for="comment-{{ anchorize $name }}">
@@ -127,6 +178,7 @@
               <textarea id="comment-{{ anchorize $name }}" name="fields[{{ anchorize $name }}]" type="{{ .type }}" {{ if .help }}aria-describedby="help-{{ anchorize .help }}"{{ .help }}{{ end }} rows=5 placeholder="{{ .placeholder }}"{{ if .required }} required{{ end }}></textarea>
               {{ if .help }}<span id="help-{{ anchorize .help }}" class="form-help">{{ .help }}</span>{{ end }}
             </p>
+            {{/* TEXT,... */}}
             {{- else }}
             <p>
               <label for="comment-{{ anchorize $name }}">
@@ -139,7 +191,10 @@
           {{ end -}}
         </fieldset>
         {{ end -}}
-        <input type="button" value='{{ i18n "form-submit" }}' class="btn right" onclick="comment()" ></input>
+        <div class="form-submit">
+          <p>{{ i18n "form-submit-message" }}</p>
+          <input type="button" value='{{ i18n "form-submit" }}' class="btn right flex-min" onclick="comment()" ></input>
+        </div>
     </form>
     <div class="completed">
       <h2>{{ i18n "form-completed" }}</h2>

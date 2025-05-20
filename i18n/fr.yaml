@@ -93,11 +93,13 @@ form-message:
 form-completed:
   other: Formulaire complété
 form-alert-success:
-  other: Nous avons bien enregistré les informations, elles sont envoyées sur le même dépôt de données que ce ce site.
+  other: Nous avons bien enregistré les informations, elles sont envoyées sur le même dépôt de données que ce site.
 form-message-placeholder:
   other: Some information here
 form-submit:
-  other: Envoyer
+  other: Envoyer vos réponses
+form-submit-message:
+  other: Vérifiez que vous avez bien répondu à toutes les questions
 contact-us:
   other: Nous contacter
 404-message:

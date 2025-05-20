@@ -191,6 +191,22 @@ input[type=button]:active {
   font-size: 1rem;
 }
 
+.form-submit {
+  margin-top: 3rem;
+  text-align: right;
+}
+
+.form-submit > * {
+  display: inline-block;
+  vertical-align: baseline;
+}
+
+.form-submit > p {
+  color: #333;
+  max-width: 250px;
+  text-align: right;
+}
+
 .form-control {
   padding: 0.2em 0 0.4em;
   font-family: font-family: var(--font-base);;
