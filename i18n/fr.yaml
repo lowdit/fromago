@@ -91,7 +91,7 @@ form-phone:
 form-message:
   other: Un message ?
 form-completed:
-  other: Formulaire complété
+  other: Formulaire complété, merci de votre participation
 form-alert-success:
   other: Nous avons bien enregistré les informations, elles sont envoyées sur le même dépôt de données que ce site.
 form-message-placeholder:

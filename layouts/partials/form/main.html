@@ -1,13 +1,13 @@
 {{ partialCached "utils/css.html" (dict "context" . "filefolder" "object" "filename" "form") "form" }}
 {{ partialCached "utils/css.html" (dict "context" . "filefolder" "object" "filename" "buttons") "buttons" }}
 <div class="fg-wrapper">
-  <section class="single-container">
+  <section id="presentation" class="single-container">
     <h1>{{ .Title }}</h1>
     {{ .Params.description | markdownify }}
   </section>
 </div>
 <div class="fg-wrapper">
-  <div class="single-container markdown">{{- partialCached "elements/content.html" .Content -}}</div>
+  <div class="markdown">{{- partialCached "elements/content.html" .Content -}}</div>
   <section id="comment-post" class="single-container">
     <script type="text/javascript">
 
@@ -205,7 +205,9 @@
 <script>
   if (localStorage.getItem("formSuccess{{ anchorize (lower .Page.Title) }}")) {
     const form = document.getElementById("form");
+    const form = document.getElementById("presentation");
     form.classList.add("form-completed");
+    form.classList.add("hide");
   }
 </script>
 {{ end }}

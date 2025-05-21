@@ -25,7 +25,7 @@
 .fg-wrapper {
   padding-right: var(--baseline,1.5em);
   padding-left: var(--baseline,1.5em);
-  width: clamp(16rem, 90%, var(--layout-max-width));
+  width: clamp(16rem, 100%, var(--layout-max-width));
 }
 
 .narrow {

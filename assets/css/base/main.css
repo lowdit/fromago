@@ -28,7 +28,7 @@ section:not(.section-line) {
   margin: 0 auto var(--baseline,1.5em);
   padding-top: var(--baseline,1.5em);
   padding-bottom: var(--baseline,1.5em) 0;
-  padding-inline: calc(var(--baseline,1.5em) * 2);
+  padding-inline: calc(var(--baseline,1.5em));
 }
 
 .section-dark {
