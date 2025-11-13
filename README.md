@@ -5,7 +5,7 @@ Vous rêvez de générer un formulaire d'enquête mais sans passer par de grande
 ## Actions :
 
  1. Rédiger un Readme potable
- 2. Insérer une options de formulaire à étape : https://css-tricks.com/how-to-create-multi-step-forms-with-vanilla-javascript-and-css/
+forma 2. Insérer une options de formulaire à étape : https://css-tricks.com/how-to-create-multi-step-forms-with-vanilla-javascript-and-css/
 
 ## Installation:
 
