@@ -38,3 +38,9 @@ It's possible to store the form files in the same repo as the publishing website
  3. Launch a build command line as : `hugo serve --gc --contentDir "form" --theme "fromago"`
 
 
+## Improvement
+
+Form Automation Tips for Happier User and Clients
+: css-tricks.com/form-automation-tips-for-happier-user-and-clients/
+
+
