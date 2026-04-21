@@ -2,11 +2,6 @@
 
 Vous rêvez de générer un formulaire d'enquête mais sans passer par de grandes plateformes ? Vous rêvez de récupérer les résultats dans un répertoire de contenu, qui va vous permettre de mettre à jour votre rapport ?
 
-## Actions :
-
- 1. Rédiger un Readme potable
-forma 2. Insérer une options de formulaire à étape : https://css-tricks.com/how-to-create-multi-step-forms-with-vanilla-javascript-and-css/
-
 ## Installation:
 
 ### Configure
@@ -27,6 +22,7 @@ Note: possible to define a target repo from the main `hugo.toml` files, or direc
 **3.** Grant Permission for Workflow
 
  * In your Github project, go to `Settings > Actions > General`. Scroll down to Workflow permissions.
+ * `Read and write permissions`
  * `Allow GitHub Actions to create and approve pull requests`
 
 ## Launch
@@ -39,6 +35,11 @@ It's possible to store the form files in the same repo as the publishing website
 
 
 ## Improvement
+
+Rédiger un Readme potable
+
+Insérer une options de formulaire à étape 
+: https://css-tricks.com/how-to-create-multi-step-forms-with-vanilla-javascript-and-css/
 
 Form Automation Tips for Happier User and Clients
 : css-tricks.com/form-automation-tips-for-happier-user-and-clients/

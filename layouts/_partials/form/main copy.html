@@ -1,0 +1,114 @@
+{{ partialCached "utils/css.html" (dict "context" . "filefolder" "object" "filename" "form") "form" }}
+{{ partialCached "utils/css.html" (dict "context" . "filefolder" "object" "filename" "buttons") "buttons" }}
+<div class="fg-wrapper">
+  <section id="presentation" class="single-container">
+    <h1>{{ .Title }}</h1>
+    {{ .Params.description | markdownify }}
+  </section>
+</div>
+<div class="fg-wrapper wrapper-form">
+  <div class="markdown">{{- partialCached "elements/content.html" .Content -}}</div>
+  <section id="comment-post" class="single-container">
+  
+  <!-- Variables globales pour le JavaScript -->
+  <script>
+    window.pageTitle = "{{ anchorize (lower .Page.Title) }}";
+    window.pageSlug = "{{ anchorize (lower .Page.Title) }}";
+    window.successMessage = "{{ i18n "form-alert-success" }}";
+    window.failureMessage = "{{ i18n "form-alert-failure" }}";
+    {{- $targetrepo := cond (not .Params.targetrepo) $.Site.Params.targetrepo .Params.targetrepo }}
+    window.targetRepo = "{{ htmlEscape $targetrepo | plainify }}";
+    window.formKeywords = [
+      "slugpath"
+      {{- range .Params.form }}
+        {{- range .questions }}
+          {{- $name := (cond (eq .name "") .label .name) }}
+          {{- if eq .type "radio" }}
+            , "{{ printf "%s_radio" (anchorize $name) }}"
+          {{- else }}
+            , "{{ anchorize $name }}"
+          {{- end }}
+        {{- end }}
+      {{- end }}
+    ];
+  </script>
+
+  {{ partialCached "form/form-script.html" . }}
+
+    <div id="form">
+      <form id="form-main" name="form-main" method="post" onsubmit="event.preventDefault(); comment(this);">
+        <!-- Hidden slugpath field -->
+        <input id="comment-slugpath" name="fields[slugpath]" type="hidden" value="{{ anchorize (lower .Page.Title) }}">
+
+        {{- range .Params.form }}
+          <fieldset>
+            <legend>{{ .title | safeHTML }}</legend>
+
+            {{- range .questions }}
+              {{- $name := (cond (eq .name "") .label .name) }}
+              {{- $aid := anchorize $name }}
+
+              {{- if eq .type "radio" }}
+                <fieldset id="comment-{{ $aid }}_{{ .type }}" class="form-radio">
+                  <legend>{{ htmlUnescape .label | safeHTML }}</legend>
+                  <div class="flex{{ if gt (len .element) 3 }} flex-column{{ end }}">
+                    {{- range .element }}
+                      <p>
+                        <label class="form-control">
+                          <input name="fields[{{ $aid }}]" type="radio" value="{{ anchorize .label }}">
+                          {{ .label | safeHTML }}
+                        </label>
+                      </p>
+                    {{- end }}
+                  </div>
+                  {{ if .help }}<span id="help-{{ anchorize .help }}" class="form-help">{{ .help }}</span>{{ end }}
+                </fieldset>
+
+              {{- else if eq .type "textarea" }}
+                <p>
+                  <label for="comment-{{ $aid }}">
+                    {{ .label | safeHTML }}{{ if .required }}<span class="form__required">{{ i18n "form-required" }}</span>{{ end }}
+                  </label>
+                  <textarea id="comment-{{ $aid }}" name="fields[{{ $aid }}]" rows="5" placeholder="{{ .placeholder }}"{{ if .required }} required{{ end }} aria-describedby="{{ if .help }}help-{{ anchorize .help }}{{ end }}"></textarea>
+                  <span id="validation-{{ $aid }}" class="validation-message" aria-live="polite"></span>
+                  {{ if .help }}<span id="help-{{ anchorize .help }}" class="form-help">{{ .help }}</span>{{ end }}
+                </p>
+
+              {{- else }}
+                <p>
+                  <label for="comment-{{ $aid }}">
+                    {{ .label | safeHTML }}{{ if .required }}<span class="form__required">{{ i18n "form-required" }}</span>{{ end }}
+                  </label>
+                  <input id="comment-{{ $aid }}" name="fields[{{ $aid }}]" type="{{ .type }}" placeholder="{{ .placeholder }}"{{ if .required }} required{{ end }} aria-describedby="{{ if .help }}help-{{ anchorize .help }}{{ end }}" />
+                  <span id="validation-{{ $aid }}" class="validation-message" aria-live="polite"></span>
+                  {{ if .help }}<span id="help-{{ anchorize .help }}" class="form-help">{{ .help }}</span>{{ end }}
+                </p>
+              {{- end }}
+
+            {{- end }}
+          </fieldset>
+        {{- end }}
+
+        <div class="form-submit">
+          <p>{{ i18n "form-submit-message" }}</p>
+          <input type="button" value='{{ i18n "form-submit" }}' class="btn right flex-min" onclick="comment()" />
+        </div>
+      </form>
+
+      <div class="completed" aria-hidden="true" style="display:none;">
+        <h2>{{ i18n "form-completed" }}</h2>
+      </div>
+    </div>
+
+  </section>
+</div>
+{{ if and (ne .Params.shot "repeat") (not hugo.IsServer) }}
+<script>
+  if (localStorage.getItem("formSuccess{{ anchorize (lower .Page.Title) }}")) {
+    const form = document.getElementById("form");
+    const presentation = document.getElementById("presentation");
+    form.classList.add("form-completed");
+    presentation.classList.add("hide");
+  }
+</script>
+{{- end }}

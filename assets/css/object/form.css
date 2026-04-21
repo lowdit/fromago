@@ -21,7 +21,7 @@ form p {
 }
 
 fieldset {
-  margin: 0;
+  margin: 0 0 var(--baseline,1.5em);
   padding: 0;
   border: none;
 }
@@ -38,9 +38,10 @@ fieldset > * {
 }
 
 legend {
-  margin-bottom: calc(var(--baseline,1.5em) * 2 );
+  margin-bottom: calc(var(--baseline,1.5em) / 2);
   padding: 0 0 0.3em 0;
   line-height: 1;
+  font-weight: 600;
   color: var(--color-grey-dark);
 }
 
