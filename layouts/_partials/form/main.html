@@ -9,226 +9,31 @@
 <div class="fg-wrapper wrapper-form">
   <div class="markdown">{{- partialCached "elements/content.html" .Content -}}</div>
   <section id="comment-post" class="single-container">
-  <script type="text/javascript">
-    /* Utility: slugify */
-    const slugify = text =>
-      text
-        .toString()
-        .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '')
-        .toLowerCase()
-        .trim()
-        .replace(/\s+/g, '-')
-        .replace(/[^\w-]+/g, '')
-        .replace(/--+/g, '-');
-
-    /* Count empty fields, treating radio groups as single fields */
-    function compterChampsVides() {
-      const formulaire = document.getElementById('form-main');
-      if (!formulaire) return 0;
-      const champs = formulaire.elements;
-      let champsVides = 0;
-      const groupesRadio = new Set();
-
-      for (let i = 0; i < champs.length; i++) {
-        const champ = champs[i];
-        if (!champ || champ.type === 'button' || champ.type === 'submit' || champ.disabled) continue;
-
-        if (champ.type === 'text' || champ.type === 'email' || champ.tagName === 'TEXTAREA' || champ.type === 'hidden' || champ.type === 'tel') {
-          if ((champ.value || '').trim() === '') champsVides++;
-        } else if (champ.type === 'radio') {
-          groupesRadio.add(champ.name);
-        } else if (champ.tagName === 'SELECT') {
-          if ((champ.value || '').trim() === '') champsVides++;
-        }
-      }
-
-      groupesRadio.forEach(nomGroupe => {
-        const radios = document.getElementsByName(nomGroupe);
-        let selectionne = false;
-        for (let j = 0; j < radios.length; j++) {
-          if (radios[j].checked) { selectionne = true; break; }
-        }
-        if (!selectionne) champsVides++;
-      });
-
-      return champsVides;
-    }
-
-    /* Validation helpers (live) */
-    const proInputs = {};
-    function initValidation() {
-      const form = document.getElementById('form-main');
-      if (!form) return;
-      const elements = form.elements;
-      for (let i = 0; i < elements.length; i++) {
-        const el = elements[i];
-        if (!el.id || !el.name) continue;
-        const aid = el.id.replace(/^comment-/, '');
-        proInputs[aid] = el;
-        el.addEventListener('input', (e) => validateField(aid, el.type || el.tagName.toLowerCase(), e.target.value));
-      }
-    }
-
-    function setValidationState(id, state, message) {
-      const el = proInputs[id];
-      const msg = document.getElementById('validation-' + id);
-      if (!el || !msg) return;
-      el.classList.remove('error', 'success');
-      msg.className = 'validation-message';
-      if (state === 'error') {
-        el.classList.add('error');
-        msg.classList.add('error');
-        msg.textContent = message;
-      } else if (state === 'success') {
-        el.classList.add('success');
-        msg.classList.add('success');
-        msg.textContent = message;
-      } else {
-        msg.textContent = '';
-      }
-    }
-
-    function validateField(id, type, value) {
-      const v = (value || '').trim();
-      // message
-      if (type === 'textarea' || id.toLowerCase().includes('message')) {
-        if (v.length === 0) { setValidationState(id, null, ''); return true; }
-        if (v.length < 10) { setValidationState(id, 'error', 'Message trop court'); return false; }
-        setValidationState(id, 'success', '✓ Ready'); return true;
-      }
-      // email
-      if (type === 'email' || id.toLowerCase().includes('email')) {
-        if (v.length === 0) { setValidationState(id, null, ''); return true; }
-        const emailRegex = /^[^\s@]+@[^\s@]+\\.[^\s@]+\$/;
-        if (!emailRegex.test(v)) { setValidationState(id, 'error', 'Format email invalide'); return false; }
-        setValidationState(id, 'success', '✓ Will be normalized: ' + v.toLowerCase()); return true;
-      }
-      // phone
-      if (type === 'tel' || id.toLowerCase().includes('phone')) {
-        if (v.length === 0) { setValidationState(id, null, ''); return true; }
-        const digits = v.replace(/\D/g, '');
-        if (digits.length < 10) { setValidationState(id, 'error', 'Le numéro doit contenir au moins 10 chiffres'); return false; }
-        setValidationState(id, 'success', '✓ Will be formatted: ' + digits); return true;
-      }
-      // name
-      if (id.toLowerCase().includes('name')) {
-        if (v.length === 0) { setValidationState(id, null, ''); return true; }
-        if (v.length < 2) { setValidationState(id, 'error', 'Nom trop court'); return false; }
-        const formatted = v.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ');
-        setValidationState(id, 'success', '✓ Will be formatted: ' + formatted); return true;
-      }
-      // default
-      setValidationState(id, null, '');
-      return true;
-    }
-
-    document.addEventListener('DOMContentLoaded', initValidation);
-
-    /* Main submit handler */
-    var comment = function(button) {
-      const form = document.getElementById('form-main');
-      if (!form) return;
-      if (!form.reportValidity()) return;
-
-      // run validations for all fields
-      let hasErrors = false;
-      Object.keys(proInputs).forEach(k => {
-        const ok = validateField(k, proInputs[k].type || proInputs[k].tagName.toLowerCase(), proInputs[k].value);
-        if (!ok) hasErrors = true;
-      });
-      if (hasErrors) {
-        alert('Veuillez corriger les champs en erreur avant de soumettre.');
-        return;
-      }
-
-      const champsVides = compterChampsVides();
-      const msg = \`Vous avez laissé \${champsVides} questions sans réponse.\n\nÊtes-vous sûr de vouloir soumettre le formulaire ?\`;
-      if (!confirm(msg)) return;
-
-      /* Build keywords list from template params (Hugo) */
-      let keywords = ["slugpath"
-        {{- range .Params.form }}
-          {{- range .questions }}
-            , {{- \$name := (cond (eq .name "") .label .name) -}}
-            {{- if eq .type "radio" -}}
-              , "{{ printf "%s\_radio" (anchorize \$name) }}"
-            {{- else -}}
-              , "{{ anchorize \$name }}"
-            {{- end -}}
+  
+  <!-- Variables globales pour le JavaScript -->
+  <script>
+    window.pageTitle = "{{ anchorize (lower .Page.Title) }}";
+    window.pageSlug = "{{ anchorize (lower .Page.Title) }}";
+    window.successMessage = "{{ i18n "form-alert-success" }}";
+    window.failureMessage = "{{ i18n "form-alert-failure" }}";
+    {{- $targetrepo := cond (not .Params.targetrepo) $.Site.Params.targetrepo .Params.targetrepo }}
+    window.targetRepo = "{{ htmlEscape $targetrepo | plainify }}";
+    window.formKeywords = [
+      "slugpath"
+      {{- range .Params.form }}
+        {{- range .questions }}
+          {{- $name := (cond (eq .name "") .label .name) }}
+          {{- if eq .type "radio" }}
+            , "{{ printf "%s_radio" (anchorize $name) }}"
+          {{- else }}
+            , "{{ anchorize $name }}"
           {{- end }}
         {{- end }}
-      ];
+      {{- end }}
+    ];
+  </script>
 
-      keywords = keywords.map(k => String(k).replace(/^,?\s*/, '').replace(/\s+\$/, ''));
-
-      let payload = { data: {} };
-      payload.name = "anonymous";
-      payload.slugname = "anonymous";
-      const date = new Date();
-      const formattedDate = \`\${date.getFullYear()}-\${String(date.getMonth() + 1).padStart(2,'0')}-\${String(date.getDate()).padStart(2,'0')}\`;
-      payload.date = formattedDate;
-
-      keywords.forEach(function(item) {
-        if (!item) return;
-        if (item.indexOf("\_radio") !== -1) {
-          const radioitem = item.split('\_')[0];
-          const ele = document.getElementsByName("fields[" + radioitem + "]");
-          payload.data[radioitem] = false;
-          for (let i = 0; i < ele.length; i++) {
-            if (ele[i].checked) payload.data[radioitem] = ele[i].value;
-          }
-        } else {
-          const el = document.getElementById("comment-" + item);
-          if (item === 'slugpath') {
-            payload[item] = el ? slugify((el.value || '').trim()) : slugify("{{ anchorize (lower .Page.Title) }}");
-          } else if (item === 'name') {
-            const betterDate = `${date.getHours()}-${date.getMinutes()}-${String(date.getSeconds()+1).padStart(2,'0')}`;
-            if (!el || (el.value || '').trim() === '') {
-              payload[item] = betterDate;
-              payload.slugname = betterDate;
-            } else {
-              payload[item] = (el.value || '').trim().replaceAll("'", '’').replaceAll("(", '\\$').replaceAll(")", '\$');
-              payload.slugname = slugify((el.value || '').trim());
-            }
-          } else {
-            payload.data[item] = el ? (el.value || '').trim().replaceAll("'", '’').replaceAll("(", '\\$').replaceAll(")", '\$').replaceAll('"', ' ') : '';
-          }
-        }
-      });
-
-      {{- \$targetrepo := cond (not .Params.targetrepo) \$.Site.Params.targetrepo .Params.targetrepo }}
-      fetch("https://publicactiontrigger.azurewebsites.net/api/dispatches/{{ htmlEscape \$targetrepo | plainify }}", {
-        method: 'POST',
-        mode: 'cors',
-        credentials: 'omit',
-        cache: 'no-cache',
-        redirect: 'error',
-        referrerPolicy: 'no-referrer',
-        body: JSON.stringify({ event\_type: 'interview', client\_payload: { data: payload } })
-      }).then(function(resp) {
-        if (resp.ok) {
-          alert('{{ i18n "form-alert-success" }}');
-          try { localStorage.setItem("formSuccess{{ anchorize (lower .Page.Title) }}", JSON.stringify(true)); } catch (e) {}
-          // show completed instead of reload
-          const completed = document.querySelector('.completed');
-          if (completed) {
-            completed.style.display = '';
-            form.style.display = 'none';
-          } else {
-            setTimeout(function(){ location.reload(); }, 1000);
-          }
-        } else if (resp.status === 422) {
-          resp.text().then(function(msg){ alert("Error: "+msg); });
-        } else {
-          resp.text().then(function(msg){ console.error('Submit error', resp.status, msg); alert('{{ i18n "form-alert-failure" }}'); });
-        }
-      }).catch(function(err){
-        console.error('Fetch error', err);
-        alert('{{ i18n "form-alert-failure" }}');
-      });
-    };
-    </script>
+  {{ partialCached "form/form-script.html" . }}
 
     <div id="form">
       <form id="form-main" name="form-main" method="post" onsubmit="event.preventDefault(); comment(this);">
@@ -240,17 +45,17 @@
             <legend>{{ .title | safeHTML }}</legend>
 
             {{- range .questions }}
-              {{- \$name := (cond (eq .name "") .label .name) }}
-              {{- \$aid := anchorize \$name }}
+              {{- $name := (cond (eq .name "") .label .name) }}
+              {{- $aid := anchorize $name }}
 
               {{- if eq .type "radio" }}
-                <fieldset id="comment-{{ \$aid }}_{{ .type }}" class="form-radio">
+                <fieldset id="comment-{{ $aid }}_{{ .type }}" class="form-radio">
                   <legend>{{ htmlUnescape .label | safeHTML }}</legend>
                   <div class="flex{{ if gt (len .element) 3 }} flex-column{{ end }}">
                     {{- range .element }}
                       <p>
                         <label class="form-control">
-                          <input name="fields[{{ \$aid }}]" type="radio" value="{{ anchorize .label }}">
+                          <input name="fields[{{ $aid }}]" type="radio" value="{{ anchorize .label }}">
                           {{ .label | safeHTML }}
                         </label>
                       </p>
@@ -261,21 +66,21 @@
 
               {{- else if eq .type "textarea" }}
                 <p>
-                  <label for="comment-{{ \$aid }}">
+                  <label for="comment-{{ $aid }}">
                     {{ .label | safeHTML }}{{ if .required }}<span class="form__required">{{ i18n "form-required" }}</span>{{ end }}
                   </label>
-                  <textarea id="comment-{{ \$aid }}" name="fields[{{ \$aid }}]" rows="5" placeholder="{{ .placeholder }}"{{ if .required }} required{{ end }} aria-describedby="{{ if .help }}help-{{ anchorize .help }}{{ end }}"></textarea>
-                  <span id="validation-{{ \$aid }}" class="validation-message" aria-live="polite"></span>
+                  <textarea id="comment-{{ $aid }}" name="fields[{{ $aid }}]" rows="5" placeholder="{{ .placeholder }}"{{ if .required }} required{{ end }} aria-describedby="{{ if .help }}help-{{ anchorize .help }}{{ end }}"></textarea>
+                  <span id="validation-{{ $aid }}" class="validation-message" aria-live="polite"></span>
                   {{ if .help }}<span id="help-{{ anchorize .help }}" class="form-help">{{ .help }}</span>{{ end }}
                 </p>
 
               {{- else }}
                 <p>
-                  <label for="comment-{{ \$aid }}">
+                  <label for="comment-{{ $aid }}">
                     {{ .label | safeHTML }}{{ if .required }}<span class="form__required">{{ i18n "form-required" }}</span>{{ end }}
                   </label>
-                  <input id="comment-{{ \$aid }}" name="fields[{{ \$aid }}]" type="{{ .type }}" placeholder="{{ .placeholder }}"{{ if .required }} required{{ end }} aria-describedby="{{ if .help }}help-{{ anchorize .help }}{{ end }}" />
-                  <span id="validation-{{ \$aid }}" class="validation-message" aria-live="polite"></span>
+                  <input id="comment-{{ $aid }}" name="fields[{{ $aid }}]" type="{{ .type }}" placeholder="{{ .placeholder }}"{{ if .required }} required{{ end }} aria-describedby="{{ if .help }}help-{{ anchorize .help }}{{ end }}" />
+                  <span id="validation-{{ $aid }}" class="validation-message" aria-live="polite"></span>
                   {{ if .help }}<span id="help-{{ anchorize .help }}" class="form-help">{{ .help }}</span>{{ end }}
                 </p>
               {{- end }}
@@ -301,9 +106,9 @@
 <script>
   if (localStorage.getItem("formSuccess{{ anchorize (lower .Page.Title) }}")) {
     const form = document.getElementById("form");
-    const form = document.getElementById("presentation");
+    const presentation = document.getElementById("presentation");
     form.classList.add("form-completed");
-    form.classList.add("hide");
+    presentation.classList.add("hide");
   }
 </script>
-{{ end }}
+{{- end }}

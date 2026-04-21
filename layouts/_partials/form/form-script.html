@@ -1,0 +1,206 @@
+<script type="text/javascript">
+    /* Utility: slugify */
+    const slugify = text =>
+      text
+        .toString()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase()
+        .trim()
+        .replace(/\s+/g, '-')
+        .replace(/[^\w-]+/g, '')
+        .replace(/--+/g, '-');
+
+    /* Count empty fields, treating radio groups as single fields */
+    function compterChampsVides() {
+      const formulaire = document.getElementById('form-main');
+      if (!formulaire) return 0;
+      const champs = formulaire.elements;
+      let champsVides = 0;
+      const groupesRadio = new Set();
+
+      for (let i = 0; i < champs.length; i++) {
+        const champ = champs[i];
+        if (!champ || champ.type === 'button' || champ.type === 'submit' || champ.disabled) continue;
+
+        if (champ.type === 'text' || champ.type === 'email' || champ.tagName === 'TEXTAREA' || champ.type === 'hidden' || champ.type === 'tel') {
+          if ((champ.value || '').trim() === '') champsVides++;
+        } else if (champ.type === 'radio') {
+          groupesRadio.add(champ.name);
+        } else if (champ.tagName === 'SELECT') {
+          if ((champ.value || '').trim() === '') champsVides++;
+        }
+      }
+
+      groupesRadio.forEach(nomGroupe => {
+        const radios = document.getElementsByName(nomGroupe);
+        let selectionne = false;
+        for (let j = 0; j < radios.length; j++) {
+          if (radios[j].checked) { selectionne = true; break; }
+        }
+        if (!selectionne) champsVides++;
+      });
+
+      return champsVides;
+    }
+
+    /* Validation helpers (live) */
+    const proInputs = {};
+    function initValidation() {
+      const form = document.getElementById('form-main');
+      if (!form) return;
+      const elements = form.elements;
+      for (let i = 0; i < elements.length; i++) {
+        const el = elements[i];
+        if (!el.id || !el.name) continue;
+        const aid = el.id.replace(/^comment-/, '');
+        proInputs[aid] = el;
+        el.addEventListener('input', (e) => validateField(aid, el.type || el.tagName.toLowerCase(), e.target.value));
+      }
+    }
+
+    function setValidationState(id, state, message) {
+      const el = proInputs[id];
+      const msg = document.getElementById('validation-' + id);
+      if (!el || !msg) return;
+      el.classList.remove('error', 'success');
+      msg.className = 'validation-message';
+      if (state === 'error') {
+        el.classList.add('error');
+        msg.classList.add('error');
+        msg.textContent = message;
+      } else if (state === 'success') {
+        el.classList.add('success');
+        msg.classList.add('success');
+        msg.textContent = message;
+      } else {
+        msg.textContent = '';
+      }
+    }
+
+    function validateField(id, type, value) {
+      const v = (value || '').trim();
+      // message
+      if (type === 'textarea' || id.toLowerCase().includes('message')) {
+        if (v.length === 0) { setValidationState(id, null, ''); return true; }
+        if (v.length < 10) { setValidationState(id, 'error', 'Message trop court'); return false; }
+        setValidationState(id, 'success', '✓ Ready'); return true;
+      }
+      // email
+      if (type === 'email' || id.toLowerCase().includes('email')) {
+        if (v.length === 0) { setValidationState(id, null, ''); return true; }
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(v)) { setValidationState(id, 'error', 'Format email invalide'); return false; }
+        setValidationState(id, 'success', '✓ Will be normalized: ' + v.toLowerCase()); return true;
+      }
+      // phone
+      if (type === 'tel' || id.toLowerCase().includes('phone')) {
+        if (v.length === 0) { setValidationState(id, null, ''); return true; }
+        const digits = v.replace(/\D/g, '');
+        if (digits.length < 10) { setValidationState(id, 'error', 'Le numéro doit contenir au moins 10 chiffres'); return false; }
+        setValidationState(id, 'success', '✓ Will be formatted: ' + digits); return true;
+      }
+      // name
+      if (id.toLowerCase().includes('name')) {
+        if (v.length === 0) { setValidationState(id, null, ''); return true; }
+        if (v.length < 2) { setValidationState(id, 'error', 'Nom trop court'); return false; }
+        const formatted = v.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ');
+        setValidationState(id, 'success', '✓ Will be formatted: ' + formatted); return true;
+      }
+      // default
+      setValidationState(id, null, '');
+      return true;
+    }
+
+    document.addEventListener('DOMContentLoaded', initValidation);
+
+    /* Main submit handler */
+    var comment = function(button) {
+      const form = document.getElementById('form-main');
+      if (!form) return;
+      if (!form.reportValidity()) return;
+
+      // run validations for all fields
+      let hasErrors = false;
+      Object.keys(proInputs).forEach(k => {
+        const ok = validateField(k, proInputs[k].type || proInputs[k].tagName.toLowerCase(), proInputs[k].value);
+        if (!ok) hasErrors = true;
+      });
+      if (hasErrors) {
+        alert('Veuillez corriger les champs en erreur avant de soumettre.');
+        return;
+      }
+
+      const champsVides = compterChampsVides();
+      const msg = `Vous avez laissé ${champsVides} questions sans réponse.\n\nÊtes-vous sûr de vouloir soumettre le formulaire ?`;
+      if (!confirm(msg)) return;
+
+      let keywords = window.formKeywords || [];
+      keywords = keywords.map(k => String(k).replace(/^,?\s*/, '').replace(/\s+$/, ''));
+
+      let payload = { data: {} };
+      payload.name = "anonymous";
+      payload.slugname = "anonymous";
+      const date = new Date();
+      const formattedDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;
+      payload.date = formattedDate;
+
+      keywords.forEach(function(item) {
+        if (!item) return;
+        if (item.indexOf("_radio") !== -1) {
+          const radioitem = item.split('_')[0];
+          const ele = document.getElementsByName("fields[" + radioitem + "]");
+          payload.data[radioitem] = false;
+          for (let i = 0; i < ele.length; i++) {
+            if (ele[i].checked) payload.data[radioitem] = ele[i].value;
+          }
+        } else {
+          const el = document.getElementById("comment-" + item);
+          if (item === 'slugpath') {
+            payload[item] = el ? slugify((el.value || '').trim()) : slugify(window.pageTitle || "");
+          } else if (item === 'name') {
+            const betterDate = `${date.getHours()}-${date.getMinutes()}-${String(date.getSeconds()+1).padStart(2,'0')}`;
+            if (!el || (el.value || '').trim() === '') {
+              payload[item] = betterDate;
+              payload.slugname = betterDate;
+            } else {
+              payload[item] = (el.value || '').trim().replaceAll("'", ''').replaceAll("(", '(').replaceAll(")", ')');
+              payload.slugname = slugify((el.value || '').trim());
+            }
+          } else {
+            payload.data[item] = el ? (el.value || '').trim().replaceAll("'", ''').replaceAll("(", '(').replaceAll(")", ')').replaceAll('"', ' ') : '';
+          }
+        }
+      });
+
+      const targetRepo = window.targetRepo || '';
+      fetch("https://publicactiontrigger.azurewebsites.net/api/dispatches/" + targetRepo, {
+        method: 'POST',
+        mode: 'cors',
+        credentials: 'omit',
+        cache: 'no-cache',
+        redirect: 'error',
+        referrerPolicy: 'no-referrer',
+        body: JSON.stringify({ event_type: 'interview', client_payload: { data: payload } })
+      }).then(function(resp) {
+        if (resp.ok) {
+          alert(window.successMessage || 'Formulaire envoyé avec succès');
+          try { localStorage.setItem("formSuccess" + window.pageSlug, JSON.stringify(true)); } catch (e) {}
+          const completed = document.querySelector('.completed');
+          if (completed) {
+            completed.style.display = '';
+            form.style.display = 'none';
+          } else {
+            setTimeout(function(){ location.reload(); }, 1000);
+          }
+        } else if (resp.status === 422) {
+          resp.text().then(function(msg){ alert("Error: "+msg); });
+        } else {
+          resp.text().then(function(msg){ console.error('Submit error', resp.status, msg); alert(window.failureMessage || 'Erreur lors de l\'envoi'); });
+        }
+      }).catch(function(err){
+        console.error('Fetch error', err);
+        alert(window.failureMessage || 'Erreur lors de l\'envoi');
+      });
+    };
+</script>
