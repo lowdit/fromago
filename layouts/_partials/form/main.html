@@ -3,7 +3,9 @@
 <div class="fg-wrapper">
   <section id="presentation" class="single-container">
     <h1>{{ .Title }}</h1>
+    <div class="description">
     {{ .Params.description | markdownify }}
+    </div>
   </section>
 </div>
 <div class="fg-wrapper">
@@ -204,9 +206,11 @@
 {{ if and (ne .Params.shot "repeat") (not hugo.IsServer) }}
 <script>
   if (localStorage.getItem("formSuccess{{ anchorize (lower .Page.Title) }}")) {
-    const form = document.getElementById("form");
+    const form = document.getElementById("form-main");
+    const description = document.getElementById("description");
     form.classList.add("form-completed");
     form.classList.add("hide");
+    description.classList.add("form-completed");
   }
 </script>
 {{ end }}
