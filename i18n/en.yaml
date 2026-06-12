@@ -1,19 +1,38 @@
+# --- Navigation and general structure ---
 home:
   other: "Home"
+nav-main:
+  other: "Main navigation"
 nav-content:
-  other: "Other contents"
+  other: "Continue reading"
 nav-package:
-  other: "View the other categories"
+  other: "Explore other categories"
+nav-skiplinks-menu:
+  other: "Main navigation"
+nav-skiplinks-content:
+  other: "Main content"
+nav-skiplinks-footer:
+  other: "Footer"
+aria-label-header:
+  other: "Banner"
+aria-label-menu-main:
+  other: "Main navigation"
+aria-label-content:
+  other: "Content"
+aria-label-footer:
+  other: "Footer"
 nav-anchor:
-  other: "Discover the thematics"
+  other: "Browse topics"
+
+# --- Content and messages ---
 promise-title:
-  other: "Content library"
+  other: "A content library"
 promise-text:
-  other: "Improving teaching and learning outcomes in the Northern region of Ghana"
+  other: "to improve teaching and learning outcomes in Northern Ghana"
 home-message:
-  other: Welcome to the internal survey form site. Forms are not accessible from this page.
+  other: "Welcome to the internal survey form website. Forms cannot be accessed from this page."
 title-related-content:
-  other: "related content"
+  other: "Related content"
 link-access-more:
   other: "See more"
 link-access-more-solutions:
@@ -21,11 +40,15 @@ link-access-more-solutions:
 link-access-more-products:
   other: "See more products"
 link-download:
-  other: "Download assets"
+  other: "Download resources"
 link-access-more-on:
-  other: "Read more on our {{ . }} skills"
+  other: "Learn more about our expertise in {{ . }}"
 link-access-content:
-  other: "See more"
+  other: "View content"
+
+# --- Forms ---
+form-legend:
+  other: "Enter your message"
 form-legend-sort:
   other: "Sort by:"
 form-legend-sort-date:
@@ -44,57 +67,67 @@ form-label-descending:
   other: "Descending"
 form-label-all:
   other: "All"
-search-placeholder:
-  other: "What are you looking for?"
-search-button:
-  other: "Search"
-assets-images:
-  other: "images"
-assets-audio:
-  other: "sounds"
-assets-documents:
-  other: "documents"
-assets-videos:
-  other: videos
+
+# --- Form fields ---
+form-required:
+  other: "Required"
+form-name:
+  other: "Your name"
+form-email:
+  other: "Your email address"
+form-topic:
+  other: "Subject"
+form-phone:
+  other: "Phone"
+form-message:
+  other: "Message"
+form-message-placeholder:
+  other: "Enter your message here"
+form-location:
+  other: "Location"
+
+# --- Validation and error messages ---
+form-error-required:
+  other: "This field is required."
+form-error-required-radio:
+  other: "Please select an option."
+form-error-invalid-email:
+  other: "Please enter a valid email address."
+form-error-invalid-phone:
+  other: "Please enter a valid phone number."
+
+# --- Submission and confirmation ---
+form-completed:
+  other: "Form completed. Thank you for your participation!"
+form-alert-success:
+  other: "Your information has been successfully recorded and sent to the same data repository as this website."
+form-submit:
+  other: "Submit your responses"
+form-submit-message:
+  other: "Please make sure you have answered all questions."
+
+# --- Technical messages ---
 message-video-compatibility:
   other: "Your browser does not support the video tag."
 message-audio-compatibility:
   other: "Your browser does not support the audio tag."
-message-notfound:
+message-not-found:
   other: "Page not found"
+
+# --- Other ---
+404-message:
+  other: "Page not found"
+404-button:
+  other: "Back to homepage"
+contact-us:
+  other: "Contact us"
+optional:
+  other: "optional"
 languages:
   one: "Language"
   other: "Languages"
 category:
   one: "category"
   other: "categories"
-optional:
-  other: "optional"
-form-required:
-  other: obligatoire
-form-submit:
-  other: Submit
-form-submit-message:
-  other: Vérifiez que vous avez bien répondu à toutes les questions
-form-alert-success:
-  other: We receive your message with success
-form-completed:
-  other: Form submitted
 location:
-  other: "location"
-name:
-  other: "name"
-email:
-  other: "email"
-phone:
-  other: "phone"
-message:
-  other: "message"
-send:
-  other: "send"
-contact-us:
-  other: "Contact Us"
-404-message:
-  other: Page not found
-404-button:
-  other: Back to home
+  other: "Location"

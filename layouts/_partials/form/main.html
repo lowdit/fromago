@@ -1,216 +1,290 @@
+{{/* Chargement des CSS partagés */}}
 {{ partialCached "utils/css.html" (dict "context" . "filefolder" "object" "filename" "form") "form" }}
 {{ partialCached "utils/css.html" (dict "context" . "filefolder" "object" "filename" "buttons") "buttons" }}
+<style>
+  /* Style des messages d'erreur pour validation-enhancer */
+  validation-enhancer[message-prefix="custom"]::after {
+    color: #d32f2f;
+    font-size: 0.8em;
+    display: block;
+    margin-top: 0.25rem;
+  }
+
+  /* Style des spans d'erreur */
+  span[id^="msg-"] {
+    color: #d32f2f;
+    font-size: 0.8em;
+    display: block;
+    margin-top: 0.25rem;
+  }
+
+  /* Style des champs invalides */
+  input:invalid, textarea:invalid, fieldset:invalid {
+    border-color: #d32f2f;
+  }
+
+  /* Style des champs valides */
+  input:not([type="hidden"]):not([type="submit"]):not([type="button"]):not([type="checkbox"]):not([type="radio"]):user-valid,
+  textarea:user-valid,
+  select:user-valid {
+    border: 2px solid #4caf50;
+  }
+</style>
+
 <div class="fg-wrapper">
   <section id="presentation" class="single-container">
     <h1>{{ .Title }}</h1>
     <div class="description">
-    {{ .Params.description | markdownify }}
+      {{ .Params.description | markdownify }}
     </div>
   </section>
 </div>
+
 <div class="fg-wrapper">
   <div class="markdown">{{- partialCached "elements/content.html" .Content -}}</div>
+
   <section id="comment-post" class="single-container">
     <script type="text/javascript">
+      // Fonction utilitaire pour slugifier les chaînes
+      const slugify = text =>
+        text
+          .toString()
+          .normalize('NFD')
+          .replace(/[\u0300-\u036f]/g, '')
+          .toLowerCase()
+          .trim()
+          .replace(/\s+/g, '-')
+          .replace(/[^\w-]+/g, '')
+          .replace(/--+/g, '-');
 
-        const slugify = text =>
-          text
-            .toString()
-            .normalize('NFD')
-            .replace(/[\u0300-\u036f]/g, '')
-            .toLowerCase()
-            .trim()
-            .replace(/\s+/g, '-')
-            .replace(/[^\w-]+/g, '')
-            .replace(/--+/g, '-')
-
-            function compterChampsVides() {
-              const formulaire = document.getElementById('form-main');
-              const champs = formulaire.elements;
-            let champsVides = 0;
-            const groupesRadio = new Set(); // Pour suivre les groupes de boutons radio
-
-            for (let i = 0; i < champs.length; i++) {
-                const champ = champs[i];
-
-                // Vérifier si le champ est défini et n'est pas un bouton
-                if (champ && champ.type !== "button") {
-                    if (champ.type === "text" || champ.type === "email" || champ.tagName === "TEXTAREA") {
-                        if (champ.value.trim() === "") {
-                            champsVides++;
-                        }
-                    } else if (champ.type === "radio") {
-                        // Ajouter le nom du groupe de boutons radio à l'ensemble
-                        groupesRadio.add(champ.name);
-                    }
-                }
+      // Fonction pour compter les champs invalides (utilise l'API native + validation-enhancer)
+      function compterChampsInvalides() {
+        const formulaire = document.getElementById('form-main');
+        if (!formulaire.checkValidity()) {
+          formulaire.reportValidity();
+          const champsInvalides = Array.from(formulaire.elements).filter(champ => {
+            // On ignore les boutons et les champs cachés
+            if (champ.type === "button" || champ.type === "submit" || champ.type === "hidden") {
+              return false;
             }
+            // Pour les radios, on vérifie si au moins un bouton du groupe est coché
+            if (champ.type === "radio") {
+              const nomGroupe = champ.name;
+              const radios = document.getElementsByName(nomGroupe);
+              return Array.from(radios).every(radio => !radio.checked && radio.required);
+            }
+            // Pour les autres champs, on vérifie la validité
+            return !champ.checkValidity();
+          }).length;
+          return champsInvalides;
+        }
+        return 0;
+      }
 
-            // Vérifier chaque groupe de boutons radio
-            groupesRadio.forEach(nomGroupe => {
-                const radios = document.getElementsByName(nomGroupe);
-                let selectionne = false;
-                for (let j = 0; j < radios.length; j++) {
-                    if (radios[j].checked) {
-                        selectionne = true;
-                        break;
-                    }
-                }
-                if (!selectionne) {
-                    champsVides++; // Incrémenter si aucun bouton radio n'est sélectionné
-                }
-            });
-
-              return champsVides;
-          }
-
-        var comment = function(button){
-          if ( !window.event.target.parentElement.parentElement.reportValidity() ){
-            return;
-          }
-
-          const champsVides = compterChampsVides();
-          console.log(champsVides)
-          const msg = `Vous avez laissé ${champsVides} questions sans réponse.\n\nÊtes-vous sûr de vouloir soumettre le formulaire ?`
-          const confirmation = confirm(msg);
-
-          if (confirmation) {
-
-            let keywords = ["slugpath" {{- range .Params.form }}{{ range .questions }}, {{- $name := (cond (eq .name "") .label .name) -}}{{- if eq .type "radio" }}{{ printf "%s_%s" (anchorize $name) .type }}{{ else }}{{ anchorize $name }}{{ end }}{{ end }}{{ end }}];
-
-            let payload = {};
-            payload.data = {}
-            payload.name = "anonymous"
-            payload.slugname = "anonymous"
-            const date = new Date();
-            const formattedDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
-            payload.date = formattedDate
-            keywords.forEach(function(item, index) {
-              if (item.indexOf("_radio") !== -1 ) {
-                  var radioitem = item.split('_')[0]
-                  var ele = document.getElementsByName("fields["+radioitem+"]");
-                  payload.data[radioitem] = false
-                  for(i = 0; i < ele.length; i++) {
-                    if(ele[i].checked)
-                    payload.data[radioitem] = ele[i].value
-                  }
-                }
-                else {
-                  if (item == "slugpath"){
-                    payload[item] = slugify(document.getElementById("comment-"+item).value.trim());
-                  }
-                  else if (item == "name") {
-                    const betterDate = `${formattedDate}-${date.getHours()}-${date.getMinutes()}-${String(date.getSeconds() + 1).padStart(2, '0')}`;
-                    if (document.getElementById("comment-"+item).value.trim() == "") {
-                      payload[item] = betterDate;
-                      payload.slugname = betterDate;
-                    }
-                    else {
-                      payload[item] = document.getElementById("comment-"+item).value.trim().replaceAll("'", '’').replaceAll("(", '\(').replaceAll(")", '\)');
-                      payload.slugname = slugify(document.getElementById("comment-"+item).value.trim());
-                    }
-                  }
-                  else {
-                    payload.data[item] = document.getElementById("comment-"+item).value.trim().replaceAll("'", '’').replaceAll("(", '\(').replaceAll(")", '\)').replaceAll('"', ' ');
-                  }
-                }
-            });
-            //keywords = keywords.map((item) => item.split('_')[0]);
-            //payload.keywords = keywords.splice(1, keywords.length)
-            //payload["email"] = SparkMD5.hash(payload["email"]);
-            //console.log(payload)
-            {{- $targetrepo := cond (not .Params.targetrepo) $.Site.Params.targetrepo .Params.targetrepo }}
-            fetch("https://publicactiontrigger.azurewebsites.net/api/dispatches/{{ htmlEscape $targetrepo | plainify }}", {
-              method: 'POST',
-              mode: 'cors',
-              credentials: 'omit',
-              cache: 'no-cache',
-              redirect: 'error',
-              referrerPolicy: 'no-referrer',
-              body: JSON.stringify({ event_type: 'interview', client_payload: { data: payload } })
-            }).then(function(resp){
-              if(resp.ok){
-                //console.log(resp)
-                alert('{{ i18n "form-alert-success" }}');
-                localStorage.setItem("formSuccess{{ anchorize (lower .Page.Title) }}", JSON.stringify(true));
-                setTimeout(function(){ location.reload(); }, 1000);
-              } else if (resp.status == 422){
-                resp.text().then(
-                  function(msg){
-                    alert("Error: "+msg);
-                  })
-              }
-            });
-          }
+      // Fonction de soumission du formulaire
+      var comment = function(button) {
+        // 1. Vérification de la validité du formulaire
+        const champsInvalides = compterChampsInvalides();
+        if (champsInvalides > 0) {
+          const msg = `Vous avez laissé ${champsInvalides} question(s) sans réponse ou mal remplie(s).\n\nVeuillez corriger les erreurs avant de soumettre.`;
+          alert(msg);
+          return;
         }
 
+        // 2. Confirmation de soumission (optionnel)
+        const confirmation = confirm("Êtes-vous sûr de vouloir soumettre le formulaire ?");
+        if (!confirmation) {
+          return;
+        }
+
+        // 3. Préparation des données
+        let keywords = ["slugpath" {{- range .Params.form }}{{ range .questions }}, {{- $name := (cond (eq .name "") .label .name) -}}{{- if eq .type "radio" }}{{ printf "%s_%s" (anchorize $name) .type }}{{ else }}{{ anchorize $name }}{{ end }}{{ end }}{{ end }}];
+        let payload = {};
+        payload.data = {}
+        payload.name = "anonymous"
+        payload.slugname = "anonymous"
+        const date = new Date();
+        const formattedDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+        payload.date = formattedDate
+
+        // 4. Remplissage du payload avec les valeurs du formulaire
+        keywords.forEach(function(item, index) {
+          if (item.indexOf("_radio") !== -1 ) {
+            var radioitem = item.split('_')[0]
+            var ele = document.getElementsByName("fields["+radioitem+"]");
+            payload.data[radioitem] = false
+            for(i = 0; i < ele.length; i++) {
+              if(ele[i].checked)
+                payload.data[radioitem] = ele[i].value
+            }
+          }
+          else {
+            if (item == "slugpath"){
+              payload[item] = slugify(document.getElementById("comment-"+item).value.trim());
+            }
+            else if (item == "name") {
+              const betterDate = `${formattedDate}-${date.getHours()}-${date.getMinutes()}-${String(date.getSeconds() + 1).padStart(2, '0')}`;
+              if (document.getElementById("comment-"+item).value.trim() == "") {
+                payload[item] = betterDate;
+                payload.slugname = betterDate;
+              }
+              else {
+                payload[item] = document.getElementById("comment-"+item).value.trim().replaceAll("'", '’').replaceAll("(", '\(').replaceAll(")", '\)');
+                payload.slugname = slugify(document.getElementById("comment-"+item).value.trim());
+              }
+            }
+            else {
+              payload.data[item] = document.getElementById("comment-"+item).value.trim().replaceAll("'", '’').replaceAll("(", '\(').replaceAll(")", '\)').replaceAll('"', ' ');
+            }
+          }
+        });
+
+        // 5. Envoi des données
+        {{- $targetrepo := cond (not .Params.targetrepo) $.Site.Params.targetrepo .Params.targetrepo }}
+        fetch("https://publicactiontrigger.azurewebsites.net/api/dispatches/{{ htmlEscape $targetrepo | plainify }}", {
+          method: 'POST',
+          mode: 'cors',
+          credentials: 'omit',
+          cache: 'no-cache',
+          redirect: 'error',
+          referrerPolicy: 'no-referrer',
+          body: JSON.stringify({ event_type: 'interview', client_payload: { data: payload } })
+        }).then(function(resp){
+          if(resp.ok){
+            alert('{{ i18n "form-alert-success" }}');
+            localStorage.setItem("formSuccess{{ anchorize (lower .Page.Title) }}", JSON.stringify(true));
+            setTimeout(function(){ location.reload(); }, 1000);
+          } else if (resp.status == 422){
+            resp.text().then(
+              function(msg){
+                alert("Error: "+msg);
+              })
+          }
+        });
+      }
     </script>
-    <div id="form">
-    <form id="form-main">
-        <!-- https://github.com/rodenacker/FormSpamPrevention -->
-        <!-- https://smarkform.bitifet.net/ -->
+
+    {{/* Début du formulaire avec validation-enhancer */}}
+    <validation-enhancer message-prefix="custom">
+      <form id="form-main">
+        <!-- Champ caché pour le slug du formulaire -->
         <input id="comment-slugpath" name="options[slugpath]" type="hidden" value="{{ anchorize (lower .Page.Title) }}">
+
+        {{/* Boucle sur les sections du formulaire */}}
         {{- range .Params.form }}
         <fieldset>
-        <legend>{{ .title  | safeHTML }}</legend>
+          <legend>{{ .title | safeHTML }}</legend>
+          {{/* Boucle sur les questions de la section */}}
           {{- range .questions }}
-          {{- $name := (cond (eq .name "") .label .name) }}
-            {{/* RADIO */}}
-            {{- if eq .type "radio" }}
-            <fieldset id="comment-{{ anchorize $name }}_{{ .type }}" class="form-radio">
-              <legend>{{ htmlUnescape .label | safeHTML }}</legend>
-              <div class="flex{{ if gt (len .element) 3 }} flex-column{{ end }}">
+          {{- $name := (cond (or (eq .name "") (not .name)) .label .name) -}}
+
+          {{/* --- RADIO --- */}}
+          {{- if eq .type "radio" }}
+          {{ $required := .required }}
+          <fieldset id="comment-{{ anchorize $name }}_{{ .type }}" class="form-radio">
+            <legend>{{ htmlUnescape .label | safeHTML }}{{ if .required }}<span class="form__required">{{ i18n "form-required" }}</span>{{ end }}</legend>
+            <div class="flex{{ if gt (len .element) 3 }} flex-column{{ end }}">
               {{- range .element }}
-                <p>
-                  <label class="form-control">
-                    <input name="fields[{{ anchorize $name }}]" type="radio" value="{{ anchorize .label }}">
-                    {{ .label | safeHTML }}
-                  </label>
-                </p>
+              <p>
+                <label class="form-control">
+                  <input
+                    name="fields[{{ anchorize $name }}]"
+                    type="radio"
+                    value="{{ anchorize .label }}"
+                    {{/* --- ERROR AS to be improve --- */}}
+                    {{- if .required }}
+                      {{- if eq (index $.Parent.Questions) 0 }}
+                        required
+                        custom-valueMissing="{{ i18n "form-error-required" | default "Veuillez sélectionner une option." }}"
+                        aria-errormessage="msg-{{ anchorize $name }}"
+                      {{- end }}
+                    {{- end }}
+                  >
+                  {{ .label | safeHTML }}
+                </label>
+              </p>
               {{ end -}}
-              </div>
-              {{ if .help }}<span id="help-{{ anchorize .help }}" class="form-help">{{ .help }}</span>{{ end }}
-            </fieldset>
-            {{/* TEXTAREA */}}
-            {{- else if eq .type "textarea" }}
-            <p>
-              <label for="comment-{{ anchorize $name }}">
-                {{ .label | safeHTML }}{{ if .required }}<span class="form__required">{{ i18n "form-required" }}</span>{{ end }}
-              </label>
-              <textarea id="comment-{{ anchorize $name }}" name="fields[{{ anchorize $name }}]" type="{{ .type }}" {{ if .help }}aria-describedby="help-{{ anchorize .help }}"{{ .help }}{{ end }} rows=5 placeholder="{{ .placeholder }}"{{ if .required }} required{{ end }}></textarea>
-              {{ if .help }}<span id="help-{{ anchorize .help }}" class="form-help">{{ .help }}</span>{{ end }}
-            </p>
-            {{/* TEXT,... */}}
-            {{- else }}
-            <p>
-              <label for="comment-{{ anchorize $name }}">
-                {{ .label | safeHTML }}{{ if .required }}<span class="form__required">{{ i18n "form-required" }}</span>{{ end }}
-              </label>
-              <input id="comment-{{ anchorize $name }}" name="fields[{{ anchorize $name }}]" type="{{ .type }}" {{ if .help }}aria-describedby="help-{{ anchorize .help }}"{{ .help }}{{ end }} placeholder="{{ .placeholder }}"{{ if .required }} required{{ end }} />
-              {{ if .help }}<span id="help-{{ anchorize .help }}" class="form-help">{{ .help }}</span>{{ end }}
-            </p>
-            {{ end }}
+            </div>
+            <span id="msg-{{ anchorize $name }}"></span>
+            {{ if .help }}<span id="help-{{ anchorize .help }}" class="form-help">{{ .help }}</span>{{ end }}
+          </fieldset>
+
+          {{/* --- TEXTAREA --- */}}
+          {{- else if eq .type "textarea" }}
+          <p>
+            <label for="comment-{{ anchorize $name }}">
+              {{ .label | safeHTML }}{{ if .required }}<span class="form__required">{{ i18n "form-required" }}</span>{{ end }}
+            </label>
+            <textarea
+              id="comment-{{ anchorize $name }}"
+              name="fields[{{ anchorize $name }}]"
+              type="{{ .type }}"
+              {{ if .help }}aria-describedby="help-{{ anchorize .help }}"{{ end }}
+              rows=5
+              placeholder="{{ .placeholder }}"
+              {{- if .required }}
+                required
+                custom-valueMissing="{{ i18n "form-error-required" | default "Ce champ est obligatoire." }}"
+                aria-errormessage="msg-{{ anchorize $name }}"
+              {{- end }}
+            ></textarea>
+            <span id="msg-{{ anchorize $name }}"></span>
+            {{ if .help }}<span id="help-{{ anchorize .help }}" class="form-help">{{ .help }}</span>{{ end }}
+          </p>
+
+          {{/* --- TEXT, EMAIL, ETC. --- */}}
+          {{- else }}
+          <p>
+            <label for="comment-{{ anchorize $name }}">
+              {{ .label | safeHTML }}{{ if .required }}<span class="form__required">{{ i18n "form-required" }}</span>{{ end }}
+            </label>
+            <input
+              id="comment-{{ anchorize $name }}"
+              name="fields[{{ anchorize $name }}]"
+              type="{{ .type }}"
+              {{ if .help }}aria-describedby="help-{{ anchorize .help }}"{{ end }}
+              placeholder="{{ .placeholder }}"
+              {{- if .required }}
+                required
+                custom-valueMissing="{{ i18n "form-error-required" | default "Ce champ est obligatoire." }}"
+                aria-errormessage="msg-{{ anchorize $name }}"
+              {{- end }}
+            />
+            <span id="msg-{{ anchorize $name }}"></span>
+            {{ if .help }}<span id="help-{{ anchorize .help }}" class="form-help">{{ .help }}</span>{{ end }}
+          </p>
+          {{ end }}
           {{ end -}}
         </fieldset>
         {{ end -}}
+
+        {{/* Bouton de soumission */}}
         <div class="form-submit">
           <p>{{ i18n "form-submit-message" }}</p>
-          <input type="button" value='{{ i18n "form-submit" }}' class="btn right flex-min" onclick="comment()" ></input>
+          <input type="button" value='{{ i18n "form-submit" }}' class="btn right flex-min" onclick="comment(this)" />
         </div>
-    </form>
+      </form>
+    </validation-enhancer>
+
+    {{/* Message de confirmation */}}
     <div class="completed">
       <h2>{{ i18n "form-completed" }}</h2>
     </div>
   </section>
 </div>
+
+{{/* Gestion du localStorage pour masquer le formulaire après soumission */}}
 {{ if and (ne .Params.shot "repeat") (not hugo.IsServer) }}
 <script>
   if (localStorage.getItem("formSuccess{{ anchorize (lower .Page.Title) }}")) {
     const form = document.getElementById("form-main");
-    const description = document.getElementById("description");
+    const description = document.getElementById("presentation");
     form.classList.add("form-completed");
     form.classList.add("hide");
     description.classList.add("form-completed");
   }
 </script>
 {{ end }}
+
+{{/* Chargement des scripts de validation */}}
+<script type="module" src="https://cdn.jsdelivr.net/npm/validation-enhancer@1.0.3/dist/validation-enhancer-zod.min.js"></script>

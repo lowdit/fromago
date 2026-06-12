@@ -1,108 +1,133 @@
+# --- Navigation et structure générale ---
 home:
   other: "Accueil"
 nav-main:
-  other: Navigation principale
+  other: "Navigation principale"
 nav-content:
-  other: A suivre
+  other: "À suivre"
 nav-package:
-  other: Découvrir les autres catégories
+  other: "Découvrir les autres catégories"
 nav-skiplinks-menu:
-  other: Navigation principale
+  other: "Navigation principale"
 nav-skiplinks-content:
-  other: Contenu principal
+  other: "Contenu principal"
 nav-skiplinks-footer:
-  other: Pied de page
+  other: "Pied de page"
 aria-label-header:
-  other: Bannière
+  other: "Bannière"
 aria-label-menu-main:
-  other: Principale
+  other: "Principale"
 aria-label-content:
-  other: Contenu
+  other: "Contenu"
 aria-label-footer:
-  other: Pied de page
+  other: "Pied de page"
 nav-anchor:
-  other: Accéder aux thématiques
+  other: "Accéder aux thématiques"
+
+# --- Contenu et messages ---
 promise-title:
-  other: Une bibliothèque de contenus
+  other: "Une bibliothèque de contenus"
 promise-text:
-  other: pour améliorer les résultats de l'enseignement et de l'apprentissage dans la région nord du Ghana
+  other: "pour améliorer les résultats de l'enseignement et de l'apprentissage dans la région nord du Ghana"
 home-message:
-  other: Bienvenue sur le site de formulaire d’enquête interne. Les formulaires ne sont pas accessibles depuis cette page.
+  other: "Bienvenue sur le site de formulaire d’enquête interne. Les formulaires ne sont pas accessibles depuis cette page."
 title-related-content:
-  other: Contenus similaires
+  other: "Contenus similaires"
 link-access-more:
-  other: Voir plus
+  other: "Voir plus"
 link-access-more-solutions:
-  other: "See more solutions"
+  other: "Voir plus de solutions"
 link-access-more-products:
-  other: "See more products"
+  other: "Voir plus de produits"
 link-download:
-  other: "Download Assets"
+  other: "Télécharger les ressources"
 link-access-more-on:
   other: "Voir plus sur nos compétences en {{ . }}"
 link-access-content:
-  other: Voir le contenu
+  other: "Voir le contenu"
+
+# --- Formulaires ---
 form-legend:
   other: "Indiquez votre message"
 form-legend-sort:
-  other: "Trier par:"
+  other: "Trier par :"
 form-legend-sort-date:
-  other: "Trier par date:"
+  other: "Trier par date :"
 form-label-title:
   other: "Titre"
 form-label-lang:
   other: "Langue"
 form-legend-lang:
-  other: "Languages:"
+  other: "Langues :"
 form-label-date:
   other: "Date"
 form-label-ascending:
   other: "Croissant"
 form-label-descending:
-  other: "Decroissant"
+  other: "Décroissant"
 form-label-all:
   other: "Tout"
-message-video-compatibility:
-  other: Your browser does not support the video tag.
-message-audio-compatibility:
-  other: "Your browser does not support the audio tag."
-message-not-found:
-  other: Page non trouvée
-languages:
-  one: Langue
-  other: Langues
-category:
-  one: catégorie
-  other: catégories
-optional:
-  other: optionel
+
+# --- Champs de formulaire ---
 form-required:
-  other: obligatoire
-location:
-  other: location
+  other: "Obligatoire"
 form-name:
-  other: Votre nom
+  other: "Votre nom"
 form-email:
-  other: Votre adresse email
+  other: "Votre adresse email"
 form-topic:
-  other: Un Sujet ?
+  other: "Un sujet ?"
 form-phone:
-  other: téléphone
+  other: "Téléphone"
 form-message:
-  other: Un message ?
-form-completed:
-  other: Formulaire complété, merci de votre participation
-form-alert-success:
-  other: Nous avons bien enregistré les informations, elles sont envoyées sur le même dépôt de données que ce site.
+  other: "Un message ?"
 form-message-placeholder:
-  other: Some information here
+  other: "Saisissez votre message ici"
+form-location:
+  other: "Localisation"
+
+# --- Validation et messages d'erreur ---
+form-error-required:
+  other: "Ce champ est obligatoire."
+form-error-required-radio:
+  other: "Veuillez sélectionner une option."
+form-error-invalid-email:
+  other: "Veuillez saisir une adresse email valide."
+form-error-invalid-phone:
+  other: "Veuillez saisir un numéro de téléphone valide."
+
+# --- Soumission et confirmation ---
+form-completed:
+  other: "Formulaire complété, merci de votre participation !"
+form-alert-success:
+  other: "Nous avons bien enregistré les informations, elles sont envoyées sur le même dépôt de données que ce site."
 form-submit:
-  other: Envoyer vos réponses
+  other: "Envoyer vos réponses"
 form-submit-message:
-  other: Vérifiez que vous avez bien répondu à toutes les questions
-contact-us:
-  other: Nous contacter
+  other: "Vérifiez que vous avez bien répondu à toutes les questions."
+
+# --- Messages techniques ---
+message-video-compatibility:
+  other: "Votre navigateur ne prend pas en charge la balise vidéo."
+message-audio-compatibility:
+  other: "Votre navigateur ne prend pas en charge la balise audio."
+message-not-found:
+  other: "Page non trouvée"
+
+# --- Autres ---
 404-message:
-  other: Page non trouvée
+  other: "Page non trouvée"
 404-button:
-  other: Retour à la page d’accueil
+  other: "Retour à la page d’accueil"
+contact-us:
+  other: "Nous contacter"
+optional:
+  other: "optionnel"
+languages:
+  one: "Langue"
+  other: "Langues"
+category:
+  one: "catégorie"
+  other: "catégories"
+location:
+  other: "Localisation"
