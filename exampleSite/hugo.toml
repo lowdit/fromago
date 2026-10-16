@@ -1,27 +1,57 @@
-baseURL = "/"
-paginate = "10"
-
-title = "Fromago"
-themesDir = "../.."
-theme = "fromago"
-
+baseURL = ""
+title = "Fromago · enquêtes"
 defaultContentLanguage = "fr"
 defaultContentLanguageInSubdir = true
 enableInlineShortcodes = true
 removePathAccents = true
 
+[module]
+  [[module.imports]]
+    path = "github.com/lowdit/minigo"
+  [[module.imports]]
+    path = "github.com/lowdit/fromago"
+
+theme = ["minigo", "fromago"]
+
+[pagination]
+  pagerSize = 10
+
 [params]
-  targetrepo = "lowdit/fromago/" ## Eg. of target repo
+  targetrepo = "lowdit/fromago/"
+
+[params.lowdit]
+  siteProfile = "inquiry"
+  view = "inquiry"
+  homeEyebrow = "Fromago · enquêtes"
+
+[[menus.main]]
+  name = "Accueil"
+  url = "/"
+  weight = 1
+[[menus.main]]
+  name = "Accessibilité numérique"
+  url = "/digitala11y/"
+  weight = 2
+[[menus.main]]
+  name = "Partenariat"
+  url = "/partnership/"
+  weight = 3
+[[menus.main]]
+  name = "Satisfaction"
+  url = "/satisfaction-service/"
+  weight = 4
 
 [languages]
   [languages.fr]
-    locale ="fr"
-    label ="Français"
+    locale = "fr"
+    label = "Français"
     weight = 1
     title = "Fromago"
   [languages.en]
-    locale ="en"
-    label ="English"
+    locale = "en"
+    label = "English"
     weight = 2
     title = "Fromago"
 
+[markup.goldmark.renderer]
+  unsafe = true
