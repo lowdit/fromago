@@ -1,0 +1,33 @@
+{{/*
+  Template « product » pour les sections (ex. content/installation/_index.md
+  avec `layout: product`). Fromago n'en fournissait aucun : une section marquée
+  `layout: product` retombait sur `_default/list.html` (liste des questionnaires,
+  gated dev) — d'où « toutes les pages » en dev et l'accès refusé en prod.
+
+  Si Minigo est chargé (theme = ["minigo","fromago"]), on délègue à son
+  rendu produit ; sinon, on rend un gabarit local autonome.
+*/}}
+{{- define "main" -}}
+  {{- if templates.Exists "partials/product/layout.html" -}}
+    {{- partial "product/layout.html" . -}}
+  {{- else -}}
+<div class="fg-wrapper">
+  <section class="page-header--c">
+    <h1 class="page-header-title">{{ .Title }}</h1>
+    {{ with .Description }}<p>{{ . | markdownify }}</p>{{ end }}
+  </section>
+</div>
+<div class="fg-wrapper">
+  <div class="markdown">{{ .Content }}</div>
+  {{- with .Pages.ByWeight }}
+  <nav aria-label="{{ i18n "product-nav" | default "Sommaire" }}">
+    <ul>
+      {{- range . }}
+      <li><a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a></li>
+      {{- end }}
+    </ul>
+  </nav>
+  {{- end }}
+</div>
+  {{- end -}}
+{{- end -}}

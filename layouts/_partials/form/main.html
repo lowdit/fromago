@@ -1,6 +1,9 @@
 {{/* Chargement des CSS partagés */}}
 {{ partialCached "utils/css.html" (dict "context" . "filefolder" "object" "filename" "form") "form" }}
 {{ partialCached "utils/css.html" (dict "context" . "filefolder" "object" "filename" "buttons") "buttons" }}
+{{- $demo := (site.Params.lowdit.formsDemo | default false) -}}
+{{- $closed := (.Params.formclosed | default false) -}}
+{{- $inert := or $demo $closed -}}
 <style>
   /* Style des messages d'erreur pour validation-enhancer */
   validation-enhancer[message-prefix="custom"]::after {
@@ -29,6 +32,23 @@
   select:user-valid {
     border: 2px solid #4caf50;
   }
+
+  /* Formulaire de démonstration / clôturé */
+  .form-demo-note {
+    margin: 0 0 1.5rem;
+    padding: 0.9rem 1.1rem;
+    border-left: 4px solid var(--lowdit-repogo, #2F6BFF);
+    background: color-mix(in srgb, var(--lowdit-repogo, #2F6BFF) 8%, var(--lowdit-white, #fff));
+    border-radius: 0.35rem;
+    font-size: 0.95rem;
+  }
+  fieldset[disabled] {
+    opacity: 0.72;
+  }
+  .form-submit--disabled p {
+    color: var(--lowdit-muted, #687280);
+    font-style: italic;
+  }
 </style>
 
 <div class="fg-wrapper">
@@ -43,7 +63,18 @@
 <div class="fg-wrapper">
   <div class="markdown">{{- partialCached "elements/content.html" .Content -}}</div>
 
+  {{- if $inert }}
+  <p class="form-demo-note" role="status">
+    {{- if $closed -}}
+    <strong>{{ i18n "form-closed-title" | default "Enquête clôturée" }}</strong> — {{ i18n "form-closed-note" | default "Cette enquête n’accepte plus de réponses. Le questionnaire est conservé à titre d’exemple." }}
+    {{- else -}}
+    <strong>{{ i18n "form-demo-title" | default "Formulaire de démonstration" }}</strong> — {{ i18n "form-demo-note" | default "Exemple figé : les champs sont désactivés et aucune réponse n’est enregistrée ni transmise." }}
+    {{- end -}}
+  </p>
+  {{- end }}
+
   <section id="comment-post" class="single-container">
+    {{- if not $inert }}
     <script type="text/javascript">
       // Fonction utilitaire pour slugifier les chaînes
       const slugify = text =>
@@ -163,6 +194,7 @@
         });
       }
     </script>
+    {{- end }}
 
     {{/* Début du formulaire avec validation-enhancer */}}
     <validation-enhancer message-prefix="custom">
@@ -172,7 +204,7 @@
 
         {{/* Boucle sur les sections du formulaire */}}
         {{- range .Params.form }}
-        <fieldset>
+        <fieldset{{ if $inert }} disabled{{ end }}>
           <legend>{{ .title | safeHTML }}</legend>
           {{/* Boucle sur les questions de la section */}}
           {{- range .questions }}
@@ -259,10 +291,16 @@
         {{ end -}}
 
         {{/* Bouton de soumission */}}
+        {{- if not $inert }}
         <div class="form-submit">
           <p>{{ i18n "form-submit-message" }}</p>
           <input type="button" value='{{ i18n "form-submit" }}' class="btn right flex-min" onclick="comment(this)" />
         </div>
+        {{- else }}
+        <div class="form-submit form-submit--disabled">
+          <p>{{ if $closed }}{{ i18n "form-closed-note" | default "Cette enquête n’accepte plus de réponses." }}{{ else }}{{ i18n "form-demo-note" | default "Formulaire de démonstration : aucune réponse n’est enregistrée." }}{{ end }}</p>
+        </div>
+        {{- end }}
       </form>
     </validation-enhancer>
 
@@ -287,4 +325,6 @@
 {{ end }}
 
 {{/* Chargement des scripts de validation */}}
+{{- if not $inert }}
 <script type="module" src="https://cdn.jsdelivr.net/npm/validation-enhancer@1.0.3/dist/validation-enhancer-zod.min.js"></script>
+{{- end }}

@@ -2,8 +2,9 @@
 title: Digital Accessibility
 type: form
 description: |-
-  I'd like to share some information with you for a survey on digital accessibility. 
+  I'd like to share some information with you for a survey on digital accessibility.
 
+  Your answers stay anonymous and are used only to illustrate a demo process.
 
 form:
   - title: First, tell us about yourself
@@ -12,7 +13,7 @@ form:
         name: name
         type: text
         placeholder: First Name Last Name
-        help: "(You can answer anonymously: do not put anything in this field)"
+        help: "(You can answer anonymously: leave this field empty)"
       - label: Your sector, if applicable
         name: sector
         type: text
@@ -22,17 +23,17 @@ form:
         name: jobtitle
         type: text
         placeholder: Job title
-      - label: Your countries of activity
+      - label: Your areas of activity
         name: countries
         type: text
-        placeholder: Uganda, Niger, Mali
-        help: "(Enter country names separated by commas)"
+        placeholder: City, region, country
+        help: "(Enter places separated by commas)"
   - title: The challenges of digital accessibility
     questions:
       - label: How much do you know about digital accessibility?
         name: estimated-knowledge-accessibility
         type: radio
-        help: (e.g. Taking into account the various disabilities in your activities, knowledge of the laws that apply in your context, impacts on beneficiaries...)
+        help: "(e.g. Taking the various disabilities into account in your activities, knowledge of the laws that apply in your context, impacts on beneficiaries...)"
         element:
           - label: none
           - label: reduced
@@ -42,60 +43,58 @@ form:
       - label: In your opinion, how do you take digital accessibility into account in your projects?
         name: estimated-action-accessibility
         type: radio
+        help: "(e.g. A process is in place for writing, designing or checking compliance)"
         element:
           - label: none
           - label: reduced
           - label: medium
-          - label: large
+          - label: important
           - label: total
-        help: (e.g. A process is in place for writing, designing or checking compliance)
       - label: Is digital accessibility an issue for your current sector or activities?
         name: mission-issue-present
         type: radio
+        help: "(e.g. Requests on the subject, legal constraints...)"
         element:
-          - label: "oui"
-          - label: "non"
-        help: (Ex. Requests on the subject, legal constraints,...)
+          - label: "Oui"
+          - label: "Non"
       - label: Will digital accessibility be a major issue in your future activities?
         name: mission-issue-futur
         type: radio
+        help: "(e.g. Donor requirements for offers)"
         element:
-          - label: "oui"
-          - label: "non"
-        help: (e.g. Obligation of donors for offers)
-  - title: Digital Experiences (Quick personal feedback)
+          - label: "Oui"
+          - label: "Non"
+  - title: Digital experiences (quick personal feedback)
     questions:
-      - label: If I say digital, what's the first word that comes to mind?
+      - label: If I say digital, what is the first word that comes to mind?
         name: first-word
         type: text
         placeholder: 1 word
-        help: (Positive or negative)
-      - label: In your opinion, what is the biggest obstacle to implementing digital accessibility?
+        help: "(Positive or negative)"
+      - label: In your opinion, what is the biggest obstacle to starting a digital accessibility process?
         name: first-block
         type: text
-        placeholder: Administration, knowledge, GAFAM
-        help: (Internal, external, human, material...)
-      - label: What action do you think needs to be taken to start taking digital inclusion issues into account?
+        placeholder: Administration, knowledge, large platforms
+        help: "(Internal, external, human, material...)"
+      - label: In your opinion, what action should be taken to start addressing digital inclusion?
         name: first-win
-        type: text
-        placeholder: Train, bring together stakeholders
-        help: (The essential first step)
+        type: textarea
+        placeholder: Train, bring stakeholders together...
+        help: "(The essential first step)"
       - label: Of these 3 actions, which do you think is the most fundamental internally?
         name: idea-internal
         type: radio
-        placeholder: Internal culture, Training, Compliance
         element:
           - label: Internal culture
           - label: Training
           - label: Compliance
-        help: (For you or your team)
+        help: "(For you or your team)"
       - label: Of these 3 actions, which do you think is the most fundamental externally?
         name: idea-external
         type: radio
-        placeholder: Internal culture, Training, Compliance
         element:
           - label: Internal culture
           - label: Training
           - label: Compliance
-        help: (For your beneficiaries or partners)
+        help: "(For your beneficiaries or partners)"
 ---

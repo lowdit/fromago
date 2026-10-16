@@ -2,10 +2,10 @@
 title: Stratégie de numérisation
 type: form
 description: |-
-  La numérisation a des impacts sur les modes de vies, les modes de productions, notre droit,... les milieux naturelles.
+  La numérisation a des impacts sur les modes de vie, les modes de production, notre droit... et les milieux naturels.
 
-  Nos modes d'organisation, des décisions, de suivi de l'assurance qualité... sont-ils adaptés pour que la numérisation soit au service l'expression citoyenne&nbsp;?
-  
+  Nos modes d'organisation, nos décisions, le suivi de l'assurance qualité... sont-ils adaptés pour que la numérisation soit au service de l'expression citoyenne&nbsp;?
+
   Quels seraient les facteurs de succès&nbsp;?
 
 form:
@@ -15,25 +15,25 @@ form:
         name: name
         type: text
         placeholder: Prénom Nom
-        help: "(Vous pouvez répondre de manière anonyme : ne rien mettre dans ce champs)"
+        help: "(Vous pouvez répondre de manière anonyme : ne rien mettre dans ce champ)"
       - label: Votre secteur d'activité, si applicable
         name: sector
         type: text
         placeholder: Nom du secteur
         help: "(Donnez le nom du secteur)"
-      - label: Quel type de travail pratiquez vous&nbsp;?
+      - label: Quel type de travail pratiquez-vous&nbsp;?
         name: jobtitle
         type: text
         placeholder: Nom de la fonction
-      - label: Vos pays d'activité
+      - label: Vos zones d'activité
         name: countries
         type: text
-        placeholder: Ouganda, Niger, Mali
-        help: "(Inscrivez des noms de pays séparés par des virgules)"
+        placeholder: Ville, région, pays
+        help: "(Inscrivez des lieux séparés par des virgules)"
       - label: Quel est, selon vous, votre niveau de maîtrise des outils numériques&nbsp;?
         name: estimated-knowledge-digital
         type: radio
-        help: (Ex. Vous savez corriger une ligne de code, vous savez comment fonctionne un data center, vois savez réinstaller un système d'exploitation sur un périphérique...)
+        help: "(Ex. Vous savez corriger une ligne de code, vous savez comment fonctionne un centre de données, vous savez réinstaller un système d'exploitation...)"
         element:
           - label: aucune
           - label: réduite
@@ -43,7 +43,7 @@ form:
       - label: Quel est, selon vous, votre niveau de connaissance concernant l'accessibilité numérique&nbsp;?
         name: estimated-knowledge-accessibility
         type: radio
-        help: (Ex. Prise en compte des différents handicaps dans vos activités, connaissance des lois qui s'appliquent dans votre contexte, impacts sur les bénéficiaires...)
+        help: "(Ex. Prise en compte des différents handicaps dans vos activités, connaissance des lois qui s'appliquent dans votre contexte, impacts sur les bénéficiaires...)"
         element:
           - label: aucune
           - label: réduite
@@ -88,7 +88,7 @@ form:
           - label: moyenne
           - label: importante
           - label: majeure
-      - label: Selon vous, quel est l'influence du niveau et qualité d'équipement des utilisateurs, en tant que facteur de succès&nbsp;?
+      - label: Selon vous, quel est l'influence du niveau et de la qualité d'équipement des utilisateurs, en tant que facteur de succès&nbsp;?
         name: influence-equipment
         type: radio
         element:
@@ -98,7 +98,7 @@ form:
           - label: importante
           - label: majeure
       - label: Selon vous, quel est l'influence d'un modèle de prise de décision par l'ensemble des parties prenantes, en tant que facteur de succès&nbsp;?
-        name:  influence-governance
+        name: influence-governance
         type: radio
         element:
           - label: aucune
@@ -107,7 +107,7 @@ form:
           - label: importante
           - label: majeure
       - label: Selon vous, quel est l'influence d'une vision et d'une stratégie claires, en tant que facteur de succès&nbsp;?
-        name: influence-trategy
+        name: influence-strategy
         type: radio
         element:
           - label: aucune
@@ -133,18 +133,22 @@ form:
           - label: moyenne
           - label: importante
           - label: majeure
-  - title: Faire partie d'une liste partenaire pour ses missions sur le numérique
+      - label: Selon vous, quel autre facteur de succès compte le plus&nbsp;?
+        name: influence-other
+        type: textarea
+        placeholder: Décrivez un facteur de succès non listé ci-dessus...
+  - title: Faire partie d'une liste partenaire pour des missions sur le numérique
     questions:
-      - label: Seriez vous intéressez pour être partenaire ?
+      - label: Seriez-vous intéressé·e pour devenir partenaire&nbsp;?
         name: partner
         type: radio
+        help: "(Consultance, partenariat sur des missions, expertise sur le terrain...)"
         element:
           - label: Oui
           - label: Non
-        help: (Consultance, partenariat sur des missions, expertise sur le terrain...)
       - label: Votre adresse mail
         name: email
         type: email
-        placeholder: georges.dupont@mail.com
-        help: "(Adresse stockée uniquement par l'équipe Social & Inclusion pour nos échanges)"
+        placeholder: camille.martin@exemple.fr
+        help: "(Adresse stockée uniquement par l'équipe de coordination de la démarche pour nos échanges)"
 ---

@@ -3,6 +3,7 @@
 <html lang="{{ .Site.Language.Locale | default "fr" }}" dir="ltr" class="no-js">
 <head>
   <meta charset="utf-8">
+  {{ partial "lowdit/design-system.html" . }}
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   {{ if .Aliases }}
@@ -22,6 +23,8 @@
   <!-- Informations -->
   {{ hugo.Generator }}
   <link rel="canonical" href="{{ .Permalink }}">
+  {{ partial "lowdit/favicon.html" . }}
+  {{ partial "lowdit/diagrams.html" . }}
   <link rel="manifest" href="{{ $.Site.BaseURL | default "/" }}manifest.json">
   {{- if .IsTranslated -}}
     {{- range .Translations -}}
@@ -123,9 +126,7 @@
     {{- $baseURL := $.Site.BaseURL | default "/" -}}
     <div class="fg-wrapper grid-main align-items-stretch mb-2 bg-body">
       <div class="flex align-items-center p-1">
-        <a href="{{ absLangURL "" }}" title="Accueil - {{ if .Site.Params.organisation }}{{ .Site.Params.organisation }}{{ else }}{{ .Site.Title }}{{ end }}" rel="home" class="site-logo">
-          {{ if .Site.Params.organisation }}{{ .Site.Params.organisation }}{{ else }}{{ .Site.Title }}{{ end }}
-        </a>
+        <a href="{{ absLangURL "" }}" title="Accueil - {{ if .Site.Params.organisation }}{{ .Site.Params.organisation }}{{ else }}{{ .Site.Title }}{{ end }}" rel="home" class="site-logo">{{ partial "lowdit/logo.html" . }}</a>
       </div>
       <div class="flex h-full">
         <nav class="nav-language grid-right p-1">
@@ -145,8 +146,5 @@
     {{ block "main" . }}{{- end -}}
   </main>
   {{ block "script" . }}{{- end -}}
-  {{- if eq (getenv "HUGO_ENV") "dev" -}}
-  {{- partial "debug/debug.html" (dict "context" .) -}}
-  {{- end -}}
 </body>
 </html>
