@@ -1,82 +1,94 @@
 name: 'Receive Interviews'
 
-## example payload { "event": "comment", "client_payload" : { "data": { "slugpath": "TEST" , "name": "TEST" , "email": "TEST" ,"comment": TEST }}}
-## https://jackyzy823.github.io/tech/blog-comment-system-upgrade-2021-en.html
+## Payload attendu (émis par l'app public-action-trigger, endpoint public) :
+## { "event_type": "interview", "client_payload": { "data": {
+##     "slugpath": "enquete-organisme", "slugname": "jean-dupont",
+##     "name": "Jean Dupont", "date": "2026-10-16", ... } } }
+##
+## SÉCURITÉ : l'entrée est PUBLIQUE. Ne jamais interpoler un champ du payload
+## directement dans un bloc `run:` (injection shell). Tous les champs passent par
+## un bloc `env:` (posé par le runner, non interprété par le shell), puis sont
+## utilisés entre guillemets et validés.
 
-# because we install `https://github.com/apps/public-action-trigger`
 on:
-  # NOTE: your site source-code branch must be default branch
+  # NOTE: la branche source du site doit être la branche par défaut
   repository_dispatch:
-    # A custom event-type
     types: [interview]
+
+permissions:
+  contents: write
+  pull-requests: write
 
 jobs:
   create-pr:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      # do we need echo to  ::set-output?
-      # in order not to be abused. all fields are processed single by single.
-      - name: Preprocess data
+      - uses: actions/checkout@v4
+
+      - name: Valider les champs (anti-injection / anti-traversée)
+        env:
+          SLUGPATH: ${{ github.event.client_payload.data.slugpath }}
+          SLUGNAME: ${{ github.event.client_payload.data.slugname }}
+        run: |
+          set -euo pipefail
+          if [[ -z "${SLUGPATH}" ]]; then
+            echo "slugpath manquant"; exit 1
+          fi
+          # slugpath : segments de dossier, pas de '..'
+          [[ "${SLUGPATH}" =~ ^[A-Za-z0-9._-]+(/[A-Za-z0-9._-]+)*$ ]] || { echo "slugpath invalide"; exit 1; }
+          # slugname : nom de fichier simple
+          [[ "${SLUGNAME}" =~ ^[A-Za-z0-9._-]+$ ]] || { echo "slugname invalide"; exit 1; }
+
+          base="$(realpath -m content/interviews)"
+          target="$(realpath -m "content/interviews/${SLUGPATH}")"
+          case "${target}" in
+            "${base}"/*) ;;
+            *) echo "chemin hors zone"; exit 1 ;;
+          esac
+
+      - name: Préparer les métadonnées
         id: preprocess
+        env:
+          NAME: ${{ github.event.client_payload.data.name }}
+          SLUGPATH: ${{ github.event.client_payload.data.slugpath }}
+          SLUGNAME: ${{ github.event.client_payload.data.slugname }}
+          PDATE: ${{ github.event.client_payload.data.date }}
         run: |
-          echo "_id=$(uuidgen)" >> $GITHUB_OUTPUT
-          echo "date=$(date +%s)" >> $GITHUB_OUTPUT
-          echo "name=${{ github.event.client_payload.data.name }}" >> $GITHUB_OUTPUT
-          echo "slugpath=${{ github.event.client_payload.data.slugpath }}" >> $GITHUB_OUTPUT
-      - name: Validate required fields
-        run: |
-          if [[ -z "${{ steps.preprocess.outputs.slugpath }}" ]];
-          then
-            exit 1;
-          fi
+          set -euo pipefail
+          echo "_id=$(uuidgen)" >> "${GITHUB_OUTPUT}"
+          echo "name=${NAME}" >> "${GITHUB_OUTPUT}"
+          echo "slugpath=${SLUGPATH}" >> "${GITHUB_OUTPUT}"
+          echo "slugname=${SLUGNAME}" >> "${GITHUB_OUTPUT}"
+          echo "date=${PDATE:-$(date +%F)}" >> "${GITHUB_OUTPUT}"
 
-          if [[ ! $(realpath -m content/interviews/${{ steps.preprocess.outputs.slugpath }}) =~ ^$(realpath -m content/interviews/).* ]];
-          then
-            exit 1;
-          fi
-      - name: Install yq
-        uses: mikefarah/yq@v4  # Utiliser l'action yq officielle
-
-      - name: Convert client payload to YAML
+      - name: Écrire le fichier de réponses
         env:
           SLUGPATH: ${{ steps.preprocess.outputs.slugpath }}
-          SLUGNAME: ${{ github.event.client_payload.data.slugname }}
-          DATE: ${{ github.event.client_payload.data.date }}
+          SLUGNAME: ${{ steps.preprocess.outputs.slugname }}
+          DATE: ${{ steps.preprocess.outputs.date }}
+          PAYLOAD: ${{ toJson(github.event.client_payload.data) }}
         run: |
-          # Convertir le payload JSON en YAML
-          mkdir -p "content/interviews/${SLUGPATH}"
-          # Convertir le payload JSON en YAML
-          yamlData=$(echo '${{ toJson(github.event.client_payload.data) }}' | yq eval -P -)
+          set -euo pipefail
+          dir="content/interviews/${SLUGPATH}"
+          mkdir -p -- "${dir}"
+          # Le JSON est un sous-ensemble du YAML : front matter valide.
+          # printf '%s' traite le payload comme chaîne littérale (pas d'éval).
+          printf -- '---\n%s\n---\n\n' "${PAYLOAD}" > "${dir}/${SLUGNAME}-${DATE}.md"
 
-          # Entourer les valeurs de guillemets sauf pour les dates
-          yamlData=$(echo "$yamlData" | awk -F': ' '{
-            if ($2 ~ /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/) {
-              print $1 ": " $2
-            } else if ($2 !~ /^".*"$/) {
-              print $1 ": \"" $2 "\""
-            } else {
-              print $0  # Imprimer la ligne telle quelle si elle est déjà entourée de guillemets
-            }
-          }')
-
-          # Créer le contenu Markdown avec les métadonnées
-          echo -e "---\n$yamlData\n---\n\n" > "content/interviews/${SLUGPATH}/${SLUGNAME}-${DATE}.md"
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v5
+      - name: Créer la Pull Request
+        uses: peter-evans/create-pull-request@v6
         with:
-          commit-message: "${{ steps.preprocess.outputs.name }} interviews on ${{ steps.preprocess.outputs.slugpath }} via apps/public-action-trigger"
-          committer: GitHub <noreply@github.com>
-          author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
-          signoff: false
+          commit-message: "${{ steps.preprocess.outputs.name }} — réponses sur ${{ steps.preprocess.outputs.slugpath }}"
           base: master
           branch: interviews-${{ steps.preprocess.outputs._id }}
           delete-branch: true
-          title: "Interviews of ${{ steps.preprocess.outputs.name }} on ${{ steps.preprocess.outputs.slugpath }}"
+          title: "Réponses de ${{ steps.preprocess.outputs.name }} — ${{ steps.preprocess.outputs.slugpath }}"
           body: |
-            Interviews on **${{ steps.preprocess.outputs.slugpath }}**:
+            Réponses reçues pour **${{ steps.preprocess.outputs.slugpath }}**.
 
-            **${{ steps.preprocess.outputs.interviews }}**
+            Fichier : `content/interviews/${{ steps.preprocess.outputs.slugpath }}/${{ steps.preprocess.outputs.slugname }}-${{ steps.preprocess.outputs.date }}.md`
+
+            À vérifier avant fusion (contenu, données personnelles).
           draft: false
-        # once Pull Request merged. .github/workflows/publish.yml will be trigged.
-        # as Pull Request merge is  a push
+        # Une fois la PR fusionnée (push sur la branche de base), le déploiement
+        # prend le relais (voir gh-pages.yml / pipeline du site de rapport).
