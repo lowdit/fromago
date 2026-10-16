@@ -83,6 +83,9 @@
   {{ partialCached "utils/css.html" (dict "context" . "filefolder" "object" "filename" "buttons") }}
   <link rel="preconnect" href="https://rsms.me/">
   <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+  {{- with site.Params.lowdit -}}
+  {{ partial "lowdit/view-styles.html" $ }}
+  {{- end -}}
 
   <script>
     // Get the selected value
@@ -111,7 +114,7 @@
     }
   </script>
 </head>
-<body class="hugo-{{ .Kind }} debug">
+<body class="hugo-{{ .Kind }} debug{{ with site.Params.lowdit }}{{ with partial "lowdit/view-body-class.html" $ }} {{ . }}{{ end }}{{ end }}">
   <div class="skip-links" role="navigation">
     <a href="#main">{{ i18n "nav-skiplinks-content" }}</a>
   </div>
