@@ -3,6 +3,10 @@ title: Installation
 description: Installer Fromago en local, depuis un fork GitHub, ou comme module Hugo — site multilingue prêt (fr / en).
 layout: product
 weight: 1
+params:
+  lowdit:
+    # Documentation produit : lien via menu ou pied de page, pas la grille d’enquêtes.
+    showOnHome: false
 ---
 
 **Fromago** est le moteur d'**enquêtes** de l'écosystème Lowdit : formulaires accessibles et statiques, copy rassurante, exports pour l'analyse. Cette page couvre l'installation pas à pas.

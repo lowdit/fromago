@@ -3,6 +3,9 @@ title: Installation
 description: Install Fromago locally, from a GitHub fork, or as a Hugo module — a ready multilingual site (fr / en).
 layout: product
 weight: 1
+params:
+  lowdit:
+    showOnHome: false
 ---
 
 **Fromago** is the **survey** engine of the Lowdit ecosystem: accessible, static forms, reassuring copy, exports for analysis. This page walks through installation.

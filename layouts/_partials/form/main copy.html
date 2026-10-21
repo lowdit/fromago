@@ -7,7 +7,7 @@
   </section>
 </div>
 <div class="fg-wrapper wrapper-form">
-  <div class="markdown">{{- partialCached "elements/content.html" .Content -}}</div>
+  {{ if .Content }}<div class="markdown">{{- partialCached "elements/content.html" .Content -}}</div>{{ end }}
   <section id="comment-post" class="single-container">
   
   <!-- Variables globales pour le JavaScript -->

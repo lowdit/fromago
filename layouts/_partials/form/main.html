@@ -61,7 +61,7 @@
 </div>
 
 <div class="fg-wrapper">
-  <div class="markdown">{{- partialCached "elements/content.html" .Content -}}</div>
+  {{ if .Content }}<div class="markdown">{{- partialCached "elements/content.html" .Content -}}</div>{{ end }}
 
   {{- if $inert }}
   <p class="form-demo-note" role="status">
