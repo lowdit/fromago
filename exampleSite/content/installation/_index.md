@@ -100,6 +100,8 @@ Pour une enquête **clôturée** (plus valide) : `formclosed = true` dans le fro
 
 ## Déploiement GitHub Pages
 
+**Démo org (live)** : [`https://lowdit.github.io/fromago/fr/`](https://lowdit.github.io/fromago/fr/) — détail dans `docs/GITHUB-PAGES.md`.
+
 - Par défaut, le workflow construit **`exampleSite/`** (`.github/hugo-site-dir`).
 - Pour un site à la racine : `content/` + `hugo.toml` à la racine et `.` dans `.github/hugo-site-dir`.
 
