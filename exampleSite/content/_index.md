@@ -4,3 +4,5 @@ description: "Fromago structure vos questionnaires terrain — formulaires acces
 ---
 
 **ExampleSite Fromago** — quatre enquêtes de démonstration : accessibilité numérique, usages numériques sur le terrain, partenariat, satisfaction d'un service en ligne. Chaque formulaire illustre la vue **inquiry** (Minigo + Fromago).
+
+Pour installer Fromago sur votre dépôt : voir [Installation](/installation/) (hors grille d’accueil).

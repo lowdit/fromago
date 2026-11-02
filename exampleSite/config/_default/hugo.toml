@@ -17,6 +17,7 @@ theme = ["minigo", "fromago"]
 
 [params.lowdit]
   logo = "logos/fromago.png"
+  socialImage = "/assets/social/twittercard-default.png"
   faviconDir = "favicons/fromago"
   siteProfile = "inquiry"
   view = "inquiry"
@@ -24,8 +25,14 @@ theme = ["minigo", "fromago"]
   # Formulaires de démonstration : champs figés, aucune réponse transmise.
   formsDemo = true
 
-# Pas de menu principal : l'accueil joue le rôle de sommaire (cartes de sections).
-# Les liens (construits avec relLangURL) portent donc toujours le préfixe de langue.
+[[menus.main]]
+  name = "Accueil"
+  url = "/"
+  weight = 1
+[[menus.main]]
+  name = "Installation"
+  url = "/installation/"
+  weight = 90
 
 [languages]
   [languages.fr]
