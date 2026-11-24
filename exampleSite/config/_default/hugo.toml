@@ -5,9 +5,9 @@ defaultContentLanguageInSubdir = true
 enableInlineShortcodes = true
 removePathAccents = true
 
-# Dev/`hugo server` : thèmes résolus en local via `themes/` (symlinks).
-# La prod utilise `config/production/hugo.toml` (modules GitHub).
-theme = ["minigo", "fromago"]
+# Modules résolus sur les dépôts locaux par bin/hugo.work (aussi pour hugo server).
+# La prod (config/production) garde les versions épinglées par go.mod.
+theme = ["github.com/lowdit/minigo", "github.com/lowdit/fromago"]
 
 [pagination]
   pagerSize = 10
@@ -48,3 +48,7 @@ theme = ["minigo", "fromago"]
 
 [markup.goldmark.renderer]
   unsafe = true
+
+[module]
+  # Espace de travail local : minigo, lowdit-kit et les modules du disque.
+  workspace = "../../bin/hugo.work"
