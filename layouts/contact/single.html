@@ -1,5 +1,5 @@
 {{ define "main" }}
-<article class="fg-wrapper narrow">
+<article class="wrapper" data-width="reading">
   <h1 class="title-main">{{ .Title }}</h1>
   {{- partialCached "elements/content.html" .Content -}}
   {{ partialCached "utils/css.html" (dict "context" . "filefolder" "object" "filename" "form") "form" }}

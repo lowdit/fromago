@@ -51,17 +51,17 @@
   }
 </style>
 
-<div class="fg-wrapper">
-  <section id="presentation" class="single-container">
+<div class="wrapper" data-width="wide">
+  <section id="presentation" class="single-container stack">
     <h1>{{ .Title }}</h1>
-    <div class="description">
+    <div class="description doc-body">
       {{ .Params.description | markdownify }}
     </div>
   </section>
 </div>
 
-<div class="fg-wrapper">
-  {{ if .Content }}<div class="markdown">{{- partialCached "elements/content.html" .Content -}}</div>{{ end }}
+<div class="wrapper" data-width="wide">
+  {{ if .Content }}<div class="doc-body">{{- partialCached "elements/content.html" .Content -}}</div>{{ end }}
 
   {{- if $inert }}
   <p class="form-demo-note" role="status">
