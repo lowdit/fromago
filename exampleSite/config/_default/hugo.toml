@@ -19,8 +19,7 @@ theme = ["github.com/lowdit/fromago", "github.com/lowdit/lowdit-kit"]
   logo = "logos/fromago.png"
   socialImage = "/assets/social/twittercard-default.png"
   faviconDir = "favicons/fromago"
-  siteProfile = "inquiry"
-  view = "inquiry"
+  model = "inquiry"
   homeEyebrow = "Fromago · enquêtes"
   # Formulaires de démonstration : champs figés, aucune réponse transmise.
   formsDemo = true

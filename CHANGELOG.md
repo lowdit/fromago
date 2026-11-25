@@ -42,6 +42,7 @@ reçoivent les sites qui suivent `main`. Politique :
 
 ### Ajouté
 
+- Modèle `inquiry` déclaré (`[params.lowdit.models.inquiry]`).
 - Feuille du modèle `assets/css/views/inquiry.css`, venue de `lowdit-kit` (même
   chemin : transparent).
 - `exampleSite` fonctionne sans minigo : `theme = ["github.com/lowdit/fromago", "github.com/lowdit/lowdit-kit"]`.

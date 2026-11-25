@@ -14,3 +14,7 @@ removePathAccents = true
 
 disableKinds = ["taxonomy", "taxonomyTerm"]
 
+
+# Modèle servi par fromago : feuille des enquêtes et formulaires.
+[params.lowdit.models.inquiry]
+  sheet = "inquiry"
