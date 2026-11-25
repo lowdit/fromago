@@ -18,6 +18,8 @@ reçoivent les sites qui suivent `main`. Politique :
 - **Retiré** : `layouts/_default/baseof.html`, gabarit Overgo déjà masqué partout
   (minigo ou higo passent devant). La coque vient du gabarit de base de `lowdit-kit`.
 
+- **Retiré** : `assets/js/mermaid.min.js`, copie : servi par `lowdit-kit`.
+
 ### Ajouté
 
 - `exampleSite` fonctionne sans minigo : `theme = ["github.com/lowdit/fromago", "github.com/lowdit/lowdit-kit"]`.
