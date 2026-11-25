@@ -7,7 +7,7 @@ removePathAccents = true
 
 # Modules résolus sur les dépôts locaux par bin/hugo.work (aussi pour hugo server).
 # La prod (config/production) garde les versions épinglées par go.mod.
-theme = ["github.com/lowdit/minigo", "github.com/lowdit/fromago"]
+theme = ["github.com/lowdit/fromago", "github.com/lowdit/lowdit-kit"]
 
 [pagination]
   pagerSize = 10
@@ -50,5 +50,5 @@ theme = ["github.com/lowdit/minigo", "github.com/lowdit/fromago"]
   unsafe = true
 
 [module]
-  # Espace de travail local : minigo, lowdit-kit et les modules du disque.
+  # Espace de travail local : lowdit-kit et les modules du disque.
   workspace = "../../bin/hugo.work"
